@@ -8,12 +8,18 @@ import { SelectionContext } from "~/app/types";
 import { exponentialBackoff, fetchWithRetry } from "~/app/utils";
 
 export const fetchSuggestions = async (context: SelectionContext) => {
-    const response = await fetchWithRetry("http://localhost:8080/suggestions", {
+    const response = await fetchWithRetry("http://localhost:8080/completion", {
         retryOn: [429],
         retryDelay: exponentialBackoff,
-        retries: 5,
+        retries: 2,
         method: "POST",
-        body: JSON.stringify(context),
+        body: JSON.stringify({
+            prompt: context.selection,
+            n_predict: 128,
+            temperature: 0.9,
+            cache_prompt: true,
+            stream: false,
+        }),
     });
 
     return response.json() as Promise<string[]>;
