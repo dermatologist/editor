@@ -8,7 +8,7 @@ import { SelectionContext } from "~/app/types";
 import { exponentialBackoff, fetchWithRetry } from "~/app/utils";
 
 export const fetchSuggestions = async (context: SelectionContext) => {
-    const response = await fetchWithRetry("/api/suggestions", {
+    const response = await fetchWithRetry("http://localhost:8080/suggestions", {
         retryOn: [429],
         retryDelay: exponentialBackoff,
         retries: 5,
@@ -20,15 +20,21 @@ export const fetchSuggestions = async (context: SelectionContext) => {
 };
 
 export const fetchCompletion = async (text: string) => {
-    const response = await fetchWithRetry("/api/completion", {
+    const response = await fetchWithRetry("http://localhost:8080/completion", {
         retryOn: [429],
         retryDelay: exponentialBackoff,
-        retries: 5,
+        retries: 2,
         method: "POST",
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({
+            prompt: text,
+            n_predict: 16,
+            temperature: 0.7,
+            cache_prompt: true,
+            stream: false,
+        }),
     });
 
-    return (await response.json()).completionText as string;
+    return (await response.json()).content as string;
 };
 
 export const getTextForSlice = (node: Node) => {
@@ -171,6 +177,7 @@ export const useSuggestions = () => {
 const MIN_DOC_LENGTH_FOR_COMPLETION = 16;
 const COMPLETION_CONTEXT_CHARS = 128;
 
+
 export const useCompletion = () => {
     const debouncedCompletion = useDebouncedCallback(
         async (editor: IEditor, transaction: Transaction) => {
@@ -185,10 +192,10 @@ export const useCompletion = () => {
             );
 
             const completion = await fetchCompletion(text);
-
             editor.commands.previewCompletion(completion);
+
         },
-        500,
+        3000, // Timeout
         { leading: false }
     );
 
