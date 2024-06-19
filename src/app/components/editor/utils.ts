@@ -14,8 +14,12 @@ export const fetchSuggestions = async (context: SelectionContext) => {
         retries: 2,
         method: "POST",
         body: JSON.stringify({
-            prompt: context.selection,  // before, selection, after
-            n_predict: 64,
+            // prompt: context.selection,  // before, selection, after
+            prompt: `You are a text improvement and suggestion tool tool
+            Given the text before as ${context.before} and the text after as ${context.after},
+            suggest a better way to write the text in the selected text.
+            selected text: ${context.selection}`,
+            n_predict: 256,
             temperature: 0.7,
             cache_prompt: true,
             stream: false,
@@ -32,9 +36,14 @@ export const fetchCompletion = async (text: string) => {
         retries: 2,
         method: "POST",
         body: JSON.stringify({
-            prompt: `${text} `,
-            n_predict: 16,
-            temperature: 0.5,
+            prompt: `You complete prose that is being written. Complete the following text.
+            Make sure the what you write works in the context of the text.
+            No special characters. No assistant annotation.
+            If there is an incomplete word, complete the word.
+
+            text: ${text} `,
+            n_predict: 32,
+            temperature: 0.4,
             cache_prompt: true,
             stream: false,
         }),
@@ -150,7 +159,7 @@ export const useSuggestions = () => {
                 setStatus("done");
             }
         },
-        250,
+        1000,
         {
             leading: false,
         }
@@ -202,7 +211,7 @@ export const useCompletion = () => {
             editor.commands.previewCompletion(completion);
 
         },
-        3000, // Timeout
+        5000, // Timeout delay
         { leading: false }
     );
 
