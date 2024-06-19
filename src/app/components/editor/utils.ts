@@ -15,14 +15,14 @@ export const fetchSuggestions = async (context: SelectionContext) => {
         method: "POST",
         body: JSON.stringify({
             prompt: context.selection,
-            n_predict: 128,
-            temperature: 0.9,
+            n_predict: 64,
+            temperature: 0.7,
             cache_prompt: true,
             stream: false,
         }),
     });
 
-    return response.json() as Promise<string[]>;
+    return [(await response.json()).content] as string[];
 };
 
 export const fetchCompletion = async (text: string) => {
@@ -34,7 +34,7 @@ export const fetchCompletion = async (text: string) => {
         body: JSON.stringify({
             prompt: text,
             n_predict: 16,
-            temperature: 0.7,
+            temperature: 0.5,
             cache_prompt: true,
             stream: false,
         }),
