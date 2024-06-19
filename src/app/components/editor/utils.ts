@@ -14,7 +14,7 @@ export const fetchSuggestions = async (context: SelectionContext) => {
         retries: 2,
         method: "POST",
         body: JSON.stringify({
-            prompt: context.selection,
+            prompt: context.selection,  // before, selection, after
             n_predict: 64,
             temperature: 0.7,
             cache_prompt: true,
@@ -32,7 +32,7 @@ export const fetchCompletion = async (text: string) => {
         retries: 2,
         method: "POST",
         body: JSON.stringify({
-            prompt: text,
+            prompt: `${text} `,
             n_predict: 16,
             temperature: 0.5,
             cache_prompt: true,
@@ -40,7 +40,8 @@ export const fetchCompletion = async (text: string) => {
         }),
     });
 
-    return (await response.json()).content as string;
+    const _reply = (await response.json()).content as string;
+    return _reply.replace("\n", "").replace(/\s\s+/g, ' ');
 };
 
 export const getTextForSlice = (node: Node) => {
