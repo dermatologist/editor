@@ -7,6 +7,9 @@ import { useDebouncedCallback } from "use-debounce";
 import { SelectionContext } from "~/app/types";
 import { exponentialBackoff, fetchWithRetry } from "~/app/utils";
 
+import bootstrap from "../../llm/bootstrap";
+import { ChainService } from '../../llm/chain';
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) {
     throw new Error("NEXT_PUBLIC_API_URL is not defined.");
@@ -73,46 +76,52 @@ export const fetchCompletion = async (text: string) => {
             If there is an incomplete word, complete the word.
 
             text: ${text} `
-    let _req;
-    if(process.env.NEXT_PUBLIC_BACKEND === "ollama") {
-        _req = {
-            "model": "phi3",
-            "max_tokens": 32,
-            "temperature": 0.5,
-            "messages": [
-                {
-                    "role": "system",
-                    "content": _system
-                },
-                {
-                    "role": "user",
-                    "content": _user
-                }
-            ]
-        }
+    const chain = await new ChainService(await bootstrap(), "main-llm", "prompt", "tools");
 
-    }else{
-        _req = {
-            prompt: _system + _user,
-            n_predict: 32,
-            temperature: 0.5,
-            cache_prompt: true,
-            stream: false,
-        }
-    }
-    const response = await fetchWithRetry(apiUrl, {
-        retryOn: [429],
-        retryDelay: exponentialBackoff,
-        retries: 2,
-        method: "POST",
-        body: JSON.stringify(_req),
-    });
-    let _reply;
-    if(process.env.NEXT_PUBLIC_BACKEND === "ollama") {
-        _reply = (await response.json()).choices[0].message.content as string;
-    }else{
-        _reply = (await response.json()).content as string;
-    }
+    const _reply = await chain.chain({'question': 'How may I help you?', 'context': "The user has asthma."})
+
+    // console.log(reply)
+
+    // let _req;
+    // if(process.env.NEXT_PUBLIC_BACKEND === "ollama") {
+    //     _req = {
+    //         "model": "phi3",
+    //         "max_tokens": 32,
+    //         "temperature": 0.5,
+    //         "messages": [
+    //             {
+    //                 "role": "system",
+    //                 "content": _system
+    //             },
+    //             {
+    //                 "role": "user",
+    //                 "content": _user
+    //             }
+    //         ]
+    //     }
+
+    // }else{
+    //     _req = {
+    //         prompt: _system + _user,
+    //         n_predict: 32,
+    //         temperature: 0.5,
+    //         cache_prompt: true,
+    //         stream: false,
+    //     }
+    // }
+    // const response = await fetchWithRetry(apiUrl, {
+    //     retryOn: [429],
+    //     retryDelay: exponentialBackoff,
+    //     retries: 2,
+    //     method: "POST",
+    //     body: JSON.stringify(_req),
+    // });
+    // let _reply;
+    // if(process.env.NEXT_PUBLIC_BACKEND === "ollama") {
+    //     _reply = (await response.json()).choices[0].message.content as string;
+    // }else{
+    //     _reply = (await response.json()).content as string;
+    // }
     return _reply.replace("\n", "").replace(/\s\s+/g, ' ');
 };
 

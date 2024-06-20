@@ -2,9 +2,12 @@ import { createClient } from "redis";
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 import { RedisVectorStore } from "@langchain/redis";
 
-const client = createClient({
-  url: process.env.NEXT_PUBLIC_REDIS_URL ?? "redis://localhost:6379",
-});
+const client = await createClient(
+  {
+    url: "redis://10.0.0.211:6379",
+  }
+)
+  .on('error', (err: any) => console.log('Redis Client Error', err));
 
 const embeddings = new OllamaEmbeddings({
     model: "all-minilm",

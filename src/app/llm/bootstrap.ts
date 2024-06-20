@@ -12,7 +12,7 @@ const bootstrap = async () => {
 
 
     const ollama = new Ollama({
-        baseUrl: "http://localhost:11434",
+        baseUrl: "http://10.0.0.211:11434",
         model: "phi3"
     });
 
@@ -24,7 +24,7 @@ const bootstrap = async () => {
     ["human", "{question}"],
     ]);
 
-    container.register("main_llm", {
+    container.register("main-llm", {
         useValue: ollama,
     });
 
@@ -33,7 +33,9 @@ const bootstrap = async () => {
         useValue: prompt,
     });
 
-
+    container.register("tools", {
+        useValue: [],
+    });
 
     return container;
 }
