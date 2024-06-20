@@ -12,7 +12,7 @@ const bootstrap = async () => {
 
 
     const ollama = new Ollama({
-        baseUrl: "http://localhost:11434",
+        baseUrl: "http://10.0.0.211:11434/v1/chat/completions",
         model: "phi3"
     });
 
