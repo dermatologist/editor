@@ -78,7 +78,7 @@ export const fetchCompletion = async (text: string) => {
             text: ${text} `
     const chain = await new ChainService(await bootstrap(), "main-llm", "prompt", "tools");
 
-    const _reply = await chain.chain({'question': 'How may I help you?', 'context': "The user has asthma."})
+    const _reply: any = await chain.ragChain({'question': 'How may I help you?', 'context': "The user has asthma."})
 
     return _reply.replace("\n", "").replace(/\s\s+/g, ' ');
 };

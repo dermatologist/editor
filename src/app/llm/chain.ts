@@ -2,7 +2,7 @@ import { BaseChain } from "medpromptjs";
 import { Document } from "@langchain/core/documents";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableMap, RunnablePassthrough } from "@langchain/core/runnables";
-import { vectorStoreAsRetriever } from "./retriever";
+import { RedisRetreiver } from "./retriever";
 
 export class ChainService extends BaseChain {
 
@@ -26,20 +26,20 @@ export class ChainService extends BaseChain {
     };
 
     //     // Override
-    // chain(input: any) {
-    //     // subchain for generating an answer once we've done retrieval
-    //     const answerChain = this.prompt.pipe(this.llm).pipe(new StringOutputParser());
-    //     const map = RunnableMap.from({
-    //         question: new RunnablePassthrough(),
-    //         docs: vectorStoreAsRetriever,
-    //     });
-    //     // complete chain that calls the retriever -> formats docs to string -> runs answer subchain -> returns just the answer and retrieved docs.
-    //     const _chain = map
-    //     .assign({ context: this.formatDocs })
-    //     .assign({ answer: answerChain })
-    //     .pick(["answer", "docs"]);
-    //     return _chain.invoke(input);
-    // }
+    async ragChain(input: any) {
+        // subchain for generating an answer once we've done retrieval
+        const answerChain = this.prompt.pipe(this.llm).pipe(new StringOutputParser());
+        const map = RunnableMap.from({
+            question: new RunnablePassthrough(),
+            docs: await new RedisRetreiver().get_client(),
+        });
+        // complete chain that calls the retriever -> formats docs to string -> runs answer subchain -> returns just the answer and retrieved docs.
+        const _chain = map
+        .assign({ context: this.formatDocs })
+        .assign({ answer: answerChain })
+        .pick(["answer", "docs"]);
+        return _chain.invoke(input);
+    }
 
 
 }
