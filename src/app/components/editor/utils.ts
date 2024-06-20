@@ -15,12 +15,16 @@ export const fetchSuggestions = async (context: SelectionContext) => {
         method: "POST",
         body: JSON.stringify({
             // prompt: context.selection,  // before, selection, after
-            prompt: `You are a text improvement and suggestion tool tool
-            Given the text before as ${context.before} and the text after as ${context.after},
-            suggest a better way to write the text in the selected text.
+            prompt: `You are a text improvement tool.
+
+            Given the text before as ${context.before}
+
+            and the text after as ${context.after},
+
+            improve only the selected text below.
             selected text: ${context.selection}`,
             n_predict: 256,
-            temperature: 0.7,
+            temperature: 0.3,
             cache_prompt: true,
             stream: false,
         }),
@@ -43,7 +47,7 @@ export const fetchCompletion = async (text: string) => {
 
             text: ${text} `,
             n_predict: 32,
-            temperature: 0.4,
+            temperature: 0.5,
             cache_prompt: true,
             stream: false,
         }),
