@@ -39,26 +39,48 @@ export const fetchSuggestions = async (context: SelectionContext) => {
 };
 
 export const fetchCompletion = async (text: string) => {
+    const _prompt = `You complete prose that is being written. Complete the following text.
+            Make sure the what you write works in the context of the text.
+            No special characters. No assistant annotation.
+            If there is an incomplete word, complete the word.
+
+            text: ${text} `
+    let _req;
+    if(process.env.NEXT_PUBLIC_BACKEND === "ollama") {
+        _req = {
+            "model": "phi3",
+            "max_tokens": 32,
+            "temperature": 0.5,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": _prompt
+                }
+            ]
+        }
+
+    }else{
+        _req = {
+            prompt: _prompt,
+            n_predict: 32,
+            temperature: 0.5,
+            cache_prompt: true,
+            stream: false,
+        }
+    }
     const response = await fetchWithRetry(apiUrl, {
         retryOn: [429],
         retryDelay: exponentialBackoff,
         retries: 2,
         method: "POST",
-        body: JSON.stringify({
-            prompt: `You complete prose that is being written. Complete the following text.
-            Make sure the what you write works in the context of the text.
-            No special characters. No assistant annotation.
-            If there is an incomplete word, complete the word.
-
-            text: ${text} `,
-            n_predict: 32,
-            temperature: 0.5,
-            cache_prompt: true,
-            stream: false,
-        }),
+        body: JSON.stringify(_req),
     });
-
-    const _reply = (await response.json()).content as string;
+    let _reply;
+    if(process.env.NEXT_PUBLIC_BACKEND === "ollama") {
+        _reply = (await response.json()).choices[0].message.content as string;
+    }else{
+        _reply = (await response.json()).content as string;
+    }
     return _reply.replace("\n", "").replace(/\s\s+/g, ' ');
 };
 
@@ -220,7 +242,7 @@ export const useCompletion = () => {
             editor.commands.previewCompletion(completion);
 
         },
-        5000, // Timeout delay
+        10000, // Timeout delay
         { leading: false }
     );
 

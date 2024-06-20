@@ -21,6 +21,12 @@ Content-Type: application/json
 }
 
 ###
+POST http://10.0.0.211:11434/v1/chat/completions HTTP/1.1
+Content-Type: application/json
+
+{"model":"phi3","messages":[{"role":"user","content":"You complete prose that is being written. Complete the following text.\n            Make sure the what you write works in the context of the text.\n            No special characters. No assistant annotation.\n            If there is an incomplete word, complete the word.\n\n            text: Hello selection is not supported  "}]}
+
+###
 
 curl 'http://10.0.0.211:11434/v1/chat/completions' \
   -H 'Accept: */*' \
