@@ -92,8 +92,8 @@ export const fetchCompletion = async (text: string) => {
         }
     )
 
-    return _reply as string;
-
+    // return _reply as string;
+    return await _reply;
     // return _system;
 }
 
