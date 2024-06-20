@@ -24,7 +24,7 @@ const bootstrap = async () => {
     ["human", "{question}"],
     ]);
 
-    container.register("main_llm", {
+    container.register("main-llm", {
         useValue: ollama,
     });
 
@@ -33,7 +33,9 @@ const bootstrap = async () => {
         useValue: prompt,
     });
 
-
+    container.register("tools", {
+        useValue: [],
+    });
 
     return container;
 }

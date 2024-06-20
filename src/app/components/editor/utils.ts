@@ -7,13 +7,17 @@ import { useDebouncedCallback } from "use-debounce";
 import { SelectionContext } from "~/app/types";
 import { exponentialBackoff, fetchWithRetry } from "~/app/utils";
 
-import { Chain } from "../../llm/chain";
 import bootstrap from "../../llm/bootstrap";
+
+
+import ChainService from "../../llm/chain";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 if (!apiUrl) {
     throw new Error("NEXT_PUBLIC_API_URL is not defined.");
 }
+
+
 
 export const fetchSuggestions = async (context: SelectionContext) => {
     const _system = `You are a text improvement tool. `;
@@ -76,13 +80,22 @@ export const fetchCompletion = async (text: string) => {
             If there is an incomplete word, complete the word.
 
             text: ${text} `
-    const _chain = new Chain(
-        bootstrap()
+    const _chain = await new ChainService(
+        await bootstrap(),
+        "",
+        ""
     );
-    return _chain.chain({
-        question: _system + _user
-    });
-};
+
+    const _reply = await _chain.chain(
+        {
+            "question": _user
+        }
+    )
+
+    return _reply as string;
+
+    // return _system;
+}
 
 export const getTextForSlice = (node: Node) => {
     return node.textBetween(0, node.nodeSize - 2, "\n");
