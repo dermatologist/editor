@@ -16,9 +16,11 @@ const vectorStore = new RedisVectorStore(embeddings, {
   indexName: "docs",
 });
 
-const retreiver = async (search: string = "") => {
+const retriever = async (search: string = "") => {
     await client.connect();
     return await vectorStore.similaritySearch(search,3);
 }
 
-export default retreiver;
+export const vectorStoreAsRetriever = vectorStore.asRetriever();
+
+export default retriever;
