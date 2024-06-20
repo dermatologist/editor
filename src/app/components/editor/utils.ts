@@ -7,8 +7,13 @@ import { useDebouncedCallback } from "use-debounce";
 import { SelectionContext } from "~/app/types";
 import { exponentialBackoff, fetchWithRetry } from "~/app/utils";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+if (!apiUrl) {
+    throw new Error("NEXT_PUBLIC_API_URL is not defined.");
+}
+
 export const fetchSuggestions = async (context: SelectionContext) => {
-    const response = await fetchWithRetry("http://localhost:8080/completion", {
+    const response = await fetchWithRetry(apiUrl, {
         retryOn: [429],
         retryDelay: exponentialBackoff,
         retries: 2,
@@ -34,7 +39,7 @@ export const fetchSuggestions = async (context: SelectionContext) => {
 };
 
 export const fetchCompletion = async (text: string) => {
-    const response = await fetchWithRetry("http://localhost:8080/completion", {
+    const response = await fetchWithRetry(apiUrl, {
         retryOn: [429],
         retryDelay: exponentialBackoff,
         retries: 2,
