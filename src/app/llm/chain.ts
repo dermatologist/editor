@@ -1,4 +1,5 @@
-import { BaseChain } from "medpromptjs";
+// import { BaseChain } from "medpromptjs";
+import { BaseChain } from "node_modules/medpromptjs/dist/medpromptjs.cjs.production.min.js";
 import { Document } from "@langchain/core/documents";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableMap, RunnablePassthrough } from "@langchain/core/runnables";

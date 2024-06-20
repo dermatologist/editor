@@ -25,12 +25,14 @@
         "fetch-retry": "^5.0.6",
         "lucide-react": "^0.284.0",
         "medpromptjs": "^0.2.1",
+        "net": "^1.0.2",
         "next": "13.5.4",
         "openai": "^4.11.1",
         "react": "^18",
         "react-dom": "^18",
         "react-use": "^17.4.0",
         "redis": "^4.6.14",
+        "tls": "^0.0.1",
         "use-debounce": "^9.0.4"
     },
     "devDependencies": {
