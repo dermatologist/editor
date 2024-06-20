@@ -13,33 +13,61 @@ if (!apiUrl) {
 }
 
 export const fetchSuggestions = async (context: SelectionContext) => {
+    const _system = `You are a text improvement tool. `;
+    const _user = `Given the text before as ${context.before}
+
+    and the text after as ${context.after},
+
+    improve only the selected text below.
+    selected text: ${context.selection}`;
+    let _req;
+    if(process.env.NEXT_PUBLIC_BACKEND === "ollama") {
+        _req = {
+            "model": "phi3",
+            "max_tokens": 256,
+            "temperature": 0.2,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": _system
+                },
+                {
+                    "role": "user",
+                    "content": _user
+                }
+            ]
+        }
+
+    }else{
+        _req = {
+            prompt: _system + _user,
+            n_predict: 256,
+            temperature: 0.3,
+            cache_prompt: true,
+            stream: false,
+        }
+    }
     const response = await fetchWithRetry(apiUrl, {
         retryOn: [429],
         retryDelay: exponentialBackoff,
         retries: 2,
         method: "POST",
-        body: JSON.stringify({
-            // prompt: context.selection,  // before, selection, after
-            prompt: `You are a text improvement tool.
-
-            Given the text before as ${context.before}
-
-            and the text after as ${context.after},
-
-            improve only the selected text below.
-            selected text: ${context.selection}`,
-            n_predict: 256,
-            temperature: 0.3,
-            cache_prompt: true,
-            stream: false,
-        }),
+        body: JSON.stringify(_req),
     });
+    let _reply;
+    if(process.env.NEXT_PUBLIC_BACKEND === "ollama") {
+        _reply = (await response.json()).choices[0].message.content as string;
+    }else{
+        _reply = (await response.json()).content as string;
+    }
+    return [_reply.replace("\n", "").replace(/\s\s+/g, ' ')] as string[];
 
-    return [(await response.json()).content] as string[];
+    // return [(await response.json()).content] as string[];
 };
 
 export const fetchCompletion = async (text: string) => {
-    const _prompt = `You complete prose that is being written. Complete the following text.
+    const _system = `You are a text completion agent. `;
+    const _user = `Complete the following text.
             Make sure the what you write works in the context of the text.
             No special characters. No assistant annotation.
             If there is an incomplete word, complete the word.
@@ -53,15 +81,19 @@ export const fetchCompletion = async (text: string) => {
             "temperature": 0.5,
             "messages": [
                 {
+                    "role": "system",
+                    "content": _system
+                },
+                {
                     "role": "user",
-                    "content": _prompt
+                    "content": _user
                 }
             ]
         }
 
     }else{
         _req = {
-            prompt: _prompt,
+            prompt: _system + _user,
             n_predict: 32,
             temperature: 0.5,
             cache_prompt: true,
@@ -242,7 +274,7 @@ export const useCompletion = () => {
             editor.commands.previewCompletion(completion);
 
         },
-        10000, // Timeout delay
+        4000, // Timeout delay
         { leading: false }
     );
 
