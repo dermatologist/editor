@@ -137,7 +137,7 @@ export const useSuggestions = () => {
                 setStatus("done");
             }
         },
-        250,
+        750,
         {
             leading: false,
         }
@@ -188,7 +188,7 @@ export const useCompletion = () => {
 
             editor.commands.previewCompletion(completion);
         },
-        500,
+        5000,
         { leading: false }
     );
 
