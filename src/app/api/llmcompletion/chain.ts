@@ -30,7 +30,7 @@ export class ChainService extends BaseChain {
     newRetreiver = async (ques: any) => {
         try {
             const retreiver = await new RedisRetreiver().get_vectorstore();
-            const context = await retreiver.similaritySearch(ques.question, 5);
+            const context = await retreiver.similaritySearch(ques.question, 2);
             return {docs: context};
         } catch (error) {
             console.log(error)
