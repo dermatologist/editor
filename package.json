@@ -20,6 +20,7 @@
         "@tiptap/starter-kit": "^2.1.11",
         "@upstash/ratelimit": "^0.4.4",
         "@vercel/kv": "^0.2.3",
+        "adm-zip": "^0.5.14",
         "ai": "^2.2.14",
         "clsx": "^2.0.0",
         "fetch-retry": "^5.0.6",
@@ -27,6 +28,7 @@
         "medpromptjs": "^0.2.2",
         "next": "13.5.4",
         "openai": "^4.11.1",
+        "original-fs": "^1.2.0",
         "pdf-parse": "^1.1.1",
         "pdf-ts": "^0.0.2",
         "react": "^18",
@@ -36,6 +38,7 @@
         "use-debounce": "^9.0.4"
     },
     "devDependencies": {
+        "@types/adm-zip": "^0.5.5",
         "@types/node": "^20",
         "@types/react": "^18",
         "@types/react-dom": "^18",
