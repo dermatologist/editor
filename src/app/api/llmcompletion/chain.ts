@@ -13,6 +13,7 @@ export class ChainService extends BaseChain {
  * Format the documents into a readable string.
  */
     formatDocs = (input: Record<string, any>): string => {
+        console.log(input)
         const { docs } = input;
         return (
             "\n\n" +
@@ -31,7 +32,14 @@ export class ChainService extends BaseChain {
             const context = await retreiver.similaritySearch(ques.question, 5);
             return context;
         } catch (error) {
-            return "";
+            console.log(error)
+            const d  = new Document({
+                metadata: {
+                    title: "Error",
+                },
+                pageContent: "Error in getting context",
+            });
+            return {docs: [d]};
         }
     }
 
@@ -39,7 +47,7 @@ export class ChainService extends BaseChain {
     async ragChain(input: any) {
         const chain = RunnableSequence.from([
         {
-            context: new RunnablePassthrough().pipe(this.newRetreiver),
+            context: new RunnablePassthrough().pipe(this.newRetreiver).pipe(this.formatDocs),
             question: new RunnablePassthrough(),
         },
         this.prompt,
