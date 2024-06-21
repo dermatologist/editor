@@ -20,7 +20,7 @@ export const fetchSuggestions = async (context: SelectionContext) => {
 };
 
 export const fetchCompletion = async (text: string) => {
-    const response = await fetchWithRetry("/api/completion", {
+    const response = await fetchWithRetry("/api/llmcompletion", {
         retryOn: [429],
         retryDelay: exponentialBackoff,
         retries: 5,

@@ -5,6 +5,9 @@ import { SelectionContext } from "~/app/types";
 
 import { withRateLimit } from "../utils";
 
+import bootstrap from "./bootstrap";
+import { ChainService } from "./chain";
+
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -18,23 +21,18 @@ export const POST = withRateLimit(async (req) => {
 
     console.log("completion input", text);
 
-    // Ask OpenAI for a streaming completion given the prompt
-    const response = await openai.completions.create({
-        model: "gpt-3.5-turbo-instruct",
-        temperature: 0.8,
-        max_tokens: 256,
-        stop: ["</write>", "<write>", "\n"],
-        prompt: `You are an autocomplete tool. Complete the incomplete text given inside the <write> block. Make sure the what you write works in the context of the text.
-        <guidelines>
-        - Write at most one sentence.
-        - Keep the style of writing consistent with the rest of the text.
-        - If the text contains an incomplete word, complete the word.
-        </guidelines>
-        <write>
-        ${text}`,
-    });
+    const _system = `You are a text completion agent. `;
+    const _user = `Complete the following text.
+            Make sure the what you write works in the context of the text.
+            No special characters. No assistant annotation.
+            If there is an incomplete word, complete the word.
 
-    const outputText = response.choices[0].text;
+            text: ${text} `
+    const chain = await new ChainService(await bootstrap(), "main-llm", "prompt", "tools");
+
+    const _reply = await chain.chain({'question': _system + _user})
+
+    const outputText = _reply.replace("\n", "").replace(/\s\s+/g, ' ');
 
     console.log("--COMPLETION_RAW_RESPONSE--");
     console.log(outputText);

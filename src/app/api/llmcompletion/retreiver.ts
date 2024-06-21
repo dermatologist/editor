@@ -16,7 +16,7 @@ export class RedisRetreiver {
         this.vectorStore = this.get_vectorstore();
     }
 
-  get_client = async () => {
+    get_client = async () => {
         const client: any = await createClient(
         {
             url: "redis://10.0.0.211:6379",
