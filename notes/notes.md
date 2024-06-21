@@ -1,0 +1,1 @@
+outside of getStaticProps / getStaticPaths / getServerSideProps
