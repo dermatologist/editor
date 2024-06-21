@@ -19,7 +19,7 @@ export const POST = withRateLimit(async (req) => {
 
     const _reply = await chain.ragChain({'question': _system + _user})
 
-    const outputText = _reply.replace("\n", "").replace(/\s\s+/g, ' ');
+    const outputText = _reply.text.replace("\n", "").replace(/\s\s+/g, ' ') + _reply.context;
 
     console.log("--COMPLETION_RAW_RESPONSE--");
     console.log(outputText);

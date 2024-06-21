@@ -46,16 +46,21 @@ export class ChainService extends BaseChain {
 
 
     async ragChain(input: any) {
+        const _context = new RunnablePassthrough().pipe(this.newRetreiver).pipe(this.formatDocs);
         const chain = RunnableSequence.from([
         {
-            context: new RunnablePassthrough().pipe(this.newRetreiver).pipe(this.formatDocs),
+            context: _context,
             question: new RunnablePassthrough(),
         },
         this.prompt,
         this.llm,
         new StringOutputParser(),
         ]);
-        return  chain.invoke(input);
+        const output = RunnableMap.from({
+            text: chain,
+            context: _context
+        })
+        return  output.invoke(input);
     }
 
 }
