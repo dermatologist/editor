@@ -17,7 +17,7 @@ export const POST = withRateLimit(async (req) => {
             text: ${text} `
     const chain = await new ChainService(await bootstrap(), "main-llm", "prompt", "tools");
 
-    const _reply = await chain.chain({'question': _system + _user})
+    const _reply = await chain.ragChain({'question': _system + _user})
 
     const outputText = _reply.replace("\n", "").replace(/\s\s+/g, ' ');
 

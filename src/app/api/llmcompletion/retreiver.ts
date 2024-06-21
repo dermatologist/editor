@@ -36,7 +36,7 @@ export class RedisRetreiver {
     }
 
     get_vectorstore = async () => {
-        const vectorStore = new RedisVectorStore(this.embeddings, {
+        const vectorStore = await new RedisVectorStore(this.embeddings, {
         redisClient: await this.client,
         indexName: "docs",
         });
