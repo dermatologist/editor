@@ -19,7 +19,7 @@ export class ChainService extends BaseChain {
             docs
             .map(
                 (doc: Document) =>
-                `Article title: ${doc.metadata.title}\nArticle Snippet: ${doc.pageContent}`
+                `|| Article title: ${doc.metadata.title}\nArticle Snippet: ${doc.pageContent}`
             )
             .join("\n\n")
         );

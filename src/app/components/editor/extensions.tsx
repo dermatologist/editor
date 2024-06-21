@@ -147,10 +147,14 @@ export const CompletionExtension = Extension.create({
 
                     if (nodes.length > 0) {
                         // convert nodes to text
-                        const text = nodes
+                        let text = nodes
                             .map((node) => node.node.textContent)
                             .join("");
-                        // insert text
+                        // insert text till references that begin with ||
+                        const index = text.indexOf("||");
+                        if (index > -1) {
+                            text = text.substring(0, index);
+                        }
                         chain()
                             .deleteRange({
                                 from: nodes[0].pos,
