@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import fs from "node:fs/promises";
-import {pdfToText} from 'pdf-ts';
+import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 
 export async function POST(req: Request) {
   try {
@@ -11,10 +11,11 @@ export async function POST(req: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);
     await fs.writeFile(`/tmp/${file.name}`, buffer);
-    const pdf = await fs.readFile(`/tmp/${file.name}`);
-    const text = await pdfToText(pdf);
-    console.log(text);
 
+    const loader = new PDFLoader(`/tmp/${file.name}`);
+
+    const docs = await loader.load();
+    console.log(docs)
     revalidatePath("/");
 
     return NextResponse.json({ status: "success" });
