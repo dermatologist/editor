@@ -13,9 +13,8 @@ export class ChainService extends BaseChain {
  * Format the documents into a readable string.
  */
     formatDocs = (input: Record<string, any>): string => {
-        console.log(input)
         const { docs } = input;
-        return (
+        const output = (
             "\n\n" +
             docs
             .map(
@@ -24,6 +23,8 @@ export class ChainService extends BaseChain {
             )
             .join("\n\n")
         );
+        console.log(output);
+        return output;
     };
 
     newRetreiver = async (ques: any) => {
