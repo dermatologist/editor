@@ -1,20 +1,7 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
-import { SelectionContext } from "~/app/types";
-
 import { withRateLimit } from "../utils";
-
 import bootstrap from "./bootstrap";
 import { ChainService } from "./chain";
-
-// Create an OpenAI API client (that's edge friendly!)
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-
-// Set the runtime to edge for best performance
-export const runtime = "edge";
 
 export const POST = withRateLimit(async (req) => {
     const { text } = await req.json();
