@@ -8,16 +8,9 @@ export const POST = withRateLimit(async (req) => {
 
     console.log("completion input", text);
 
-    const _system = `You are a text completion agent. `;
-    const _user = `Complete the following text.
-            Make sure the what you write works in the context of the text.
-            No special characters. No assistant annotation.
-            If there is an incomplete word, complete the word.
+    const chain = await new ChainService(await bootstrap(), "", "", "");
 
-            text: ${text} `
-    const chain = await new ChainService(await bootstrap(), "main-llm", "prompt", "tools");
-
-    const _reply = await chain.ragChain({'question': _system + _user})
+    const _reply = await chain.ragChain({'question': text})
 
     const outputText = _reply.text.replace("\n", "").replace(/\s\s+/g, ' ') + _reply.context;
 
