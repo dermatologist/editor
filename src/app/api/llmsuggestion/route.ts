@@ -2,17 +2,25 @@ import { NextResponse } from "next/server";
 import { withRateLimit } from "../utils";
 import bootstrap from "../bootstrap";
 import { ChainService } from "./chain";
+import { SelectionContext } from "~/app/types";
 
 export const POST = withRateLimit(async (req) => {
-    const { text } = await req.json();
+    const { before, selection, after } = (await req.json()) as SelectionContext;
 
-    console.log("completion input", text);
 
     const chain = await new ChainService(await bootstrap(), "", "", "");
 
-    const _reply = await chain.ragChain({'question': text})
+    console.log("\n Suggestion: ", "before", before, "selection", selection, "after", after)
 
-    const outputText = _reply.text.replace("\n", "").replace(/\s\s+/g, ' ') + _reply.context;
+    // const outputText = [""]
+
+    const _reply = await chain.Chain({
+        before: before,
+        after: after,
+        selection: selection
+    });
+
+    const outputText = [_reply.replace("\n", "").replace(/\s\s+/g, ' ')]
 
     console.log("--COMPLETION_RAW_RESPONSE--");
     console.log(outputText);

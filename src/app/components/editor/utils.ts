@@ -8,7 +8,7 @@ import { SelectionContext } from "~/app/types";
 import { exponentialBackoff, fetchWithRetry } from "~/app/utils";
 
 export const fetchSuggestions = async (context: SelectionContext) => {
-    const response = await fetchWithRetry("/api/suggestions", {
+    const response = await fetchWithRetry("/api/llmsuggestion", {
         retryOn: [429],
         retryDelay: exponentialBackoff,
         retries: 5,

@@ -16,6 +16,14 @@ const bootstrap = async () => {
         model: "phi3"
     });
 
+    const suggestion_prompt = ChatPromptTemplate.fromMessages([
+    [
+        "system",
+        "You're a text improvement agent. Please suggest improvements for only the text between the square brackets from the human below. ",
+    ],
+    ["human", `{before}{selection}{after}`],
+    ]);
+
     const prompt = ChatPromptTemplate.fromMessages([
     [
         "system",
@@ -31,6 +39,10 @@ const bootstrap = async () => {
 
     container.register("prompt", {
         useValue: prompt,
+    });
+
+    container.register("suggestion-prompt", {
+        useValue: suggestion_prompt,
     });
 
     container.register("tools", {
