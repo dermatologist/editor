@@ -1,0 +1,6 @@
+###
+
+curl http://10.0.0.211:11434/api/embeddings -d '{
+  "model": "all-minilm",
+  "prompt": "Llamas are members of the camelid family"
+}'

@@ -1,7 +1,7 @@
 import { BaseChain } from "medpromptjs";
 import { Document } from "@langchain/core/documents";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { RunnableMap, RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables";
+import { RunnableMap, RunnablePassthrough, RunnableSequence, RunnableLambda } from "@langchain/core/runnables";
 import { RedisRetreiver } from './retreiver'
 
 export class ChainService extends BaseChain {
@@ -25,11 +25,21 @@ export class ChainService extends BaseChain {
         );
     };
 
+    newRetreiver = async (ques: any) => {
+        try {
+            const retreiver = await new RedisRetreiver().get_vectorstore();
+            const context = await retreiver.similaritySearch(ques.question, 5);
+            return context;
+        } catch (error) {
+            return "";
+        }
+    }
+
 
     async ragChain(input: any) {
         const chain = RunnableSequence.from([
         {
-            context: (await new RedisRetreiver().get_vectorstore()).asRetriever(),
+            context: new RunnablePassthrough().pipe(this.newRetreiver),
             question: new RunnablePassthrough(),
         },
         this.prompt,

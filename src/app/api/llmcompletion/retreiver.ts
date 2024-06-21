@@ -7,7 +7,7 @@ import { RedisVectorStore } from "@langchain/redis";
 export class RedisRetreiver {
 
     client: any;
-    embeddings: any;
+    embeddings: OllamaEmbeddings;
     vectorStore: any;
 
     constructor() {
@@ -27,16 +27,16 @@ export class RedisRetreiver {
         return client;
     }
 
-    get_embedddings = async () => {
-        const embeddings = await new OllamaEmbeddings({
+    get_embedddings = () => {
+        return new OllamaEmbeddings({
             model: "all-minilm",
-            baseUrl: "http://localhost:11434", // default value
+            baseUrl: "http://10.0.0.211:11434", // default value
         });
-        return embeddings;
     }
 
     get_vectorstore = async () => {
-        const vectorStore = await new RedisVectorStore(this.embeddings, {
+        const embeddings = this.embeddings;
+        const vectorStore = await new RedisVectorStore(embeddings, {
         redisClient: await this.client,
         indexName: "docs",
         });
