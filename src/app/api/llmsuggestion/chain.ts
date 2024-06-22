@@ -9,6 +9,10 @@ export class ChainService extends BaseChain {
 
 
     async Chain(input: any) {
+        const search = RunnableSequence.from([{
+            input: new RunnablePassthrough().pick("selection"),
+        }, this.tools[0]]);
+
         const output = RunnableSequence.from([
         new RunnablePassthrough(),
         this.resolve("suggestion-prompt"),

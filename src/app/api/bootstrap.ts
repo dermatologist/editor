@@ -6,10 +6,10 @@ import { pull } from "langchain/hub";
 
 import { z } from "zod";
 import { DynamicTool, DynamicStructuredTool } from "@langchain/core/tools";
+import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 
 
 const bootstrap = async () => {
-
 
     const ollama = new Ollama({
         baseUrl: "http://10.0.0.211:11434",
@@ -32,6 +32,9 @@ const bootstrap = async () => {
     ["human", "{question}"],
     ]);
 
+    // Define the tools the agent will have access to.
+    const tools = [new TavilySearchResults({ maxResults: 1, apiKey: process.env.NEXT_PUBLIC_TAVILY_KEY })];
+
     container.register("main-llm", {
         useValue: ollama,
     });
@@ -46,7 +49,7 @@ const bootstrap = async () => {
     });
 
     container.register("tools", {
-        useValue: [],
+        useValue: tools,
     });
 
     return container;
