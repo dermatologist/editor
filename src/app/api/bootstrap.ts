@@ -13,7 +13,7 @@ const bootstrap = async () => {
 
     const redis_client: any = await createClient(
         {
-            url: "redis://10.130.3.3:6379",
+            url: "redis://10.0.0.211:6379",
         }
         )
         .on('error', (err: any) => console.log('Redis Client Error', err))
