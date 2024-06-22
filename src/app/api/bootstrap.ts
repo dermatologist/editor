@@ -45,7 +45,7 @@ const bootstrap = async () => {
     const prompt = ChatPromptTemplate.fromMessages([
     [
         "system",
-        "You're a completion assistant. Given the part of a sentence and some context, try to complete the sentence using the context if possible. \n\nHere is the context:{context}. If context is not relevant use your own knowledge to complete",
+        "You're a completion assistant. Given the part of a sentence and some context, try to complete the sentence using the context between square brackets. \n\n[{context}]. If context is not relevant or empty use your own knowledge to complete",
     ],
     ["human", "{question}"],
     ]);
