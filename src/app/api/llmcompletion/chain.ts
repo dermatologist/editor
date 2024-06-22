@@ -2,7 +2,6 @@ import { BaseChain } from "medpromptjs";
 import { Document } from "@langchain/core/documents";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableMap, RunnablePassthrough, RunnableSequence, RunnableLambda } from "@langchain/core/runnables";
-import { RedisRetreiver } from './retreiver'
 
 export class ChainService extends BaseChain {
 
@@ -29,8 +28,8 @@ export class ChainService extends BaseChain {
 
     newRetreiver = async (ques: any) => {
         try {
-            const retreiver = await new RedisRetreiver().get_vectorstore();
-            const context = await retreiver.similaritySearch(ques.question, 2);
+            const vectorstore = await this.resolve("vectorstore");
+            const context = await vectorstore.asRetriever().similaritySearch(ques.question, 2);
             return {docs: context};
         } catch (error) {
             console.log(error)
