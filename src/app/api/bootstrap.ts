@@ -11,6 +11,8 @@ import { RedisVectorStore } from "@langchain/redis";
 
 const bootstrap = async () => {
 
+    const indexName: string = "genai-derm";
+
     const redis_client: any = await createClient(
         {
             url: "redis://10.0.0.211:6379",
@@ -26,7 +28,7 @@ const bootstrap = async () => {
 
     const vectorstore = await new RedisVectorStore(embedding, {
         redisClient: await redis_client,
-        indexName: "testdocs",
+        indexName: indexName,
     });
 
     const ollama = new Ollama({
@@ -52,6 +54,10 @@ const bootstrap = async () => {
 
     // Define the tools the agent will have access to.
     const tools = [new TavilySearchResults({ maxResults: 1, apiKey: process.env.NEXT_PUBLIC_TAVILY_KEY })];
+
+    container.register("index-name", {
+        useValue: indexName,
+    });
 
     container.register("main-llm", {
         useValue: ollama,

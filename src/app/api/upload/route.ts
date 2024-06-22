@@ -10,7 +10,7 @@ import bootstrap from "../bootstrap";
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
-    const redisRetriever = new RedisRetreiver(bootstrap());
+    const redisRetriever = new RedisRetreiver(await bootstrap(), "", "");
     const file = formData.get("file") as File;
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);

@@ -1,43 +1,38 @@
 import { RedisVectorStore } from "@langchain/redis";
+import { BaseChain } from "medpromptjs";
 
-export class RedisRetreiver {
+export class RedisRetreiver extends BaseChain{
 
-    container: any;
-    client: any;
-    embeddings: any;
-    vectorStore: any;
-
-    constructor(container: any) {
-        this.container = container;
-        this.client = container.resolve("redis-client") || null;
-        this.embeddings = container.resolve("embeddings") || null;
-        this.vectorStore = container.resolve("vectorstore") || null;
-    }
 
     put_docs = async (docs: any) => {
-        const embeddings = this.embeddings;
-        const vectorStore = await RedisVectorStore.fromDocuments(
-        docs,
-        embeddings,
-        {
-            redisClient: await this.client,
-            indexName: "docs",
+        if(docs.length > 0){
+            const embedding = this.resolve("embedding");
+            const vectorStore = await RedisVectorStore.fromDocuments(
+            docs,
+            embedding,
+            {
+                redisClient: await this.resolve("redis-client"),
+                indexName: this.resolve("index-name"),
+            }
+            );
+            return vectorStore;
+        }else{
+            console.log("No docs to put")
+            return true;
         }
-        );
-        return vectorStore;
     }
 
     get_vectorstore = async () => {
-        if (!this.vectorStore) {
+        if (!this.resolve("vectorstore")) {
         throw new Error("No vector store found");
         }
-        return this.vectorStore;
+        return this.resolve("vectorstore");
     }
 
     get_retriever = async () => {
-        if (!this.vectorStore) {
+        if (!this.resolve("vectorstore")) {
         throw new Error("No vector store found");
         }
-        return this.vectorStore.asRetriever();
+        return this.resolve("vectorstore").asRetriever();
     }
 }
