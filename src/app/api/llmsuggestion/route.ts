@@ -20,12 +20,27 @@ export const POST = withRateLimit(async (req) => {
         selection: selection
     });
 
-    const outputText = [_reply.replace("\n", "").replace(/\s\s+/g, ' ')]
+    const outputText = _reply
 
-    console.log("--COMPLETION_RAW_RESPONSE--");
+    console.log("--SUGGESTION_RAW_RESPONSE--");
     console.log(outputText);
 
-    return NextResponse.json({
-        completionText: outputText,
-    });
+    const suggestions = Array.from(
+        new Set(
+            outputText.split("\n").flatMap((suggestion) => {
+                let match = suggestion.match(/\[(.*?)\]/);
+                const result = (match ? match[1] : suggestion.replace("- ", ""))
+                    .trim()
+                    .replace("\\n", "\n");
+
+                if (result && result !== selection) {
+                    return result;
+                }
+
+                return [];
+            })
+        )
+    );
+
+    return NextResponse.json(suggestions);
 });
