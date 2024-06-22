@@ -36,9 +36,9 @@ export class ChainService extends BaseChain {
             console.log(error)
             const d  = new Document({
                 metadata: {
-                    title: "Error",
+                    title: "",
                 },
-                pageContent: "Error in getting context",
+                pageContent: ques.question,
             });
             return {docs: [d]};
         }
