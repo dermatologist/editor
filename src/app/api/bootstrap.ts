@@ -2,14 +2,32 @@ import "reflect-metadata";
 import { container } from "tsyringe";
 import {Ollama } from "@langchain/community/llms/ollama";
 import { ChatPromptTemplate} from "langchain/prompts";
-import { pull } from "langchain/hub";
-
 import { z } from "zod";
-import { DynamicTool, DynamicStructuredTool } from "@langchain/core/tools";
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
+import { createClient } from "redis";
+import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
+import { RedisVectorStore } from "@langchain/redis";
 
 
 const bootstrap = async () => {
+
+    const redis_client: any = await createClient(
+        {
+            url: "redis://10.130.3.3:6379",
+        }
+        )
+        .on('error', (err: any) => console.log('Redis Client Error', err))
+    .connect();
+
+    const embedding: OllamaEmbeddings =  new OllamaEmbeddings({
+        model: "all-minilm",
+        baseUrl: "http://10.0.0.211:11434", // default value
+    });
+
+    const vectorstore = await new RedisVectorStore(embedding, {
+        redisClient: await redis_client,
+        indexName: "testdocs",
+    });
 
     const ollama = new Ollama({
         baseUrl: "http://10.0.0.211:11434",
@@ -50,6 +68,18 @@ const bootstrap = async () => {
 
     container.register("tools", {
         useValue: tools,
+    });
+
+    container.register("redis-client", {
+        useValue: redis_client,
+    });
+
+    container.register("embedding", {
+        useValue: embedding,
+    });
+
+    container.register("vectorstore", {
+        useValue: vectorstore,
     });
 
     return container;

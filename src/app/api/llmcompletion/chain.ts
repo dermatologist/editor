@@ -6,12 +6,10 @@ import { RedisRetreiver } from './retreiver'
 
 export class ChainService extends BaseChain {
 
-
-
     // ref: https://js.langchain.com/v0.1/docs/use_cases/question_answering/citations/
     /**
- * Format the documents into a readable string.
- */
+    * Format the documents into a readable string.
+    */
     formatDocs = (input: Record<string, any>): string => {
         const { docs } = input;
         const output = (
@@ -29,8 +27,8 @@ export class ChainService extends BaseChain {
 
     newRetreiver = async (ques: any) => {
         try {
-            const retreiver = await new RedisRetreiver().get_vectorstore();
-            const context = await retreiver.similaritySearch(ques.question, 2);
+            const vectorstore = await new RedisRetreiver(this.container).get_vectorstore();
+            const context = await vectorstore.similaritySearch(ques.question, 2);
             return {docs: context};
         } catch (error) {
             console.log(error)
