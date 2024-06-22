@@ -19,9 +19,9 @@ const bootstrap = async () => {
     const suggestion_prompt = ChatPromptTemplate.fromMessages([
     [
         "system",
-        "You're a text improvement agent. Please suggest improvements for only the text between the square brackets from the human below. ",
+        "You're a text improvement agent. Please suggest improvements for only the text between the square brackets using additional context: {search}",
     ],
-    ["human", `{before}{selection}{after}`],
+    ["human", `{before} [{selection}] {after}`],
     ]);
 
     const prompt = ChatPromptTemplate.fromMessages([
