@@ -5,11 +5,12 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { RedisRetreiver } from "../llmcompletion/retreiver";
 import {pdfToText} from 'pdf-ts';
 import AdmZip  from 'adm-zip';
+import bootstrap from "../bootstrap";
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
-    const redisRetriever = new RedisRetreiver();
+    const redisRetriever = new RedisRetreiver(bootstrap());
     const file = formData.get("file") as File;
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);
