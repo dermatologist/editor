@@ -7,6 +7,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { SelectionContext } from "~/app/types";
 import { exponentialBackoff, fetchWithRetry } from "~/app/utils";
 
+
 export const fetchSuggestions = async (context: SelectionContext) => {
     const response = await fetchWithRetry("/api/llmsuggestion", {
         retryOn: [429],
@@ -90,6 +91,9 @@ export const useSuggestions = () => {
     const [status, setStatus] = React.useState<"idle" | "fetching" | "done">(
         "idle"
     );
+    const [fstatus, setFstatus] = React.useState<"idle" | "fetching">(
+        "idle"
+    );
 
     const transactionRef = React.useRef<number>(0);
 
@@ -127,15 +131,27 @@ export const useSuggestions = () => {
             const transactionId = Date.now();
             transactionRef.current = transactionId;
 
-            const suggestions = await fetchSuggestions(context);
-
-            if (
-                transactionId === transactionRef.current &&
-                statusRef.current === "fetching"
-            ) {
-                setSuggestions(suggestions);
-                setStatus("done");
+            let suggestions: string[] = [];
+            if(fstatus === "idle") {
+                setFstatus("fetching");
+                fetchSuggestions(context).then((result) => {
+                    suggestions = result;
+                    setFstatus("idle");
+                    if (
+                        transactionId === transactionRef.current &&
+                        statusRef.current === "fetching"
+                    ) {
+                        setSuggestions(suggestions);
+                        setStatus("done");
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                    setFstatus("idle");
+                });
             }
+
+            // const suggestions = await fetchSuggestions(context);
+
         },
         750,
         {
@@ -172,6 +188,10 @@ const MIN_DOC_LENGTH_FOR_COMPLETION = 16;
 const COMPLETION_CONTEXT_CHARS = 128;
 
 export const useCompletion = () => {
+    const [fstatus, setFstatus] = React.useState<"idle" | "fetching">(
+        "idle"
+    );
+
     const debouncedCompletion = useDebouncedCallback(
         async (editor: IEditor, transaction: Transaction) => {
             const text = getTextForSlice(
@@ -184,11 +204,21 @@ export const useCompletion = () => {
                 )
             );
 
-            const completion = await fetchCompletion(text);
-
-            editor.commands.previewCompletion(completion);
+            let completion = "";
+            if(fstatus === "idle") {
+                setFstatus("fetching");
+                fetchCompletion(text).then((result) => {
+                    completion = result;
+                    setFstatus("idle");
+                    editor.commands.previewCompletion(completion);
+                }).catch((error) => {
+                    console.error(error);
+                    setFstatus("idle");
+                });
+            }
+            // const completion = await fetchCompletion(text);
         },
-        5000,
+        500,
         { leading: false }
     );
 
