@@ -184,8 +184,8 @@ export const useSuggestions = () => {
     };
 };
 
-const MIN_DOC_LENGTH_FOR_COMPLETION = 16;
-const COMPLETION_CONTEXT_CHARS = 128;
+const MIN_DOC_LENGTH_FOR_COMPLETION = 32;
+const COMPLETION_CONTEXT_CHARS = 256; //128
 
 export const useCompletion = () => {
     const [fstatus, setFstatus] = React.useState<"idle" | "fetching">(

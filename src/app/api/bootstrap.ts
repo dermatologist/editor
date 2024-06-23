@@ -34,7 +34,7 @@ const bootstrap = async () => {
     const ollama = new Ollama({
         baseUrl: "http://10.0.0.211:11434",
         model: "phi3",
-        numPredict: 64,
+        numPredict: 128,
         temperature: 0.6,
     });
 
@@ -63,9 +63,9 @@ const bootstrap = async () => {
     const gen_prompt = ChatPromptTemplate.fromMessages([
     [
         "system",
-        "Complete the sentence without repeating it ",
+        "You are a text completion agent.",
     ],
-    ["human", "{question}"],
+    ["human", "Expand and complete {question}"],
     ]);
 
     const prompt = gen_prompt;

@@ -48,7 +48,7 @@ export class ChainService extends BaseChain {
         const chain = RunnableSequence.from([
         {
             context: _context,
-            question: new RunnablePassthrough(),
+            question: new RunnablePassthrough().pick("question"),
         },
         this.prompt,
         this.llm,
