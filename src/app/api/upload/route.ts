@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);
     await fs.writeFile(`/tmp/${file.name}`, buffer);
-    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 100, chunkOverlap: 10});
+    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 256, chunkOverlap: 20});
 
     if (file.name.endsWith(".zip")) {
       const zip = new AdmZip(`/tmp/${file.name}`);
