@@ -7,8 +7,8 @@ import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { createClient } from "redis";
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 import { RedisVectorStore } from "@langchain/redis";
-// import { VertexAI } from "@langchain/google-vertexai";
 import { VertexAI } from "@langchain/google-vertexai";
+import { GoogleVertexAIEmbeddings } from "@langchain/community/embeddings/googlevertexai";
 
 const bootstrap = async () => {
 
@@ -41,11 +41,16 @@ const bootstrap = async () => {
         .on('error', (err: any) => console.log('Redis Client Error', err))
     .connect();
 
-    const embedding: OllamaEmbeddings =  new OllamaEmbeddings({
+    let embedding: any = null;
+    try {
+        embedding = new GoogleVertexAIEmbeddings();
+    } catch (error) {
+
+        embedding =  new OllamaEmbeddings({
         model: "all-minilm",
         baseUrl: "http://10.0.0.211:11434", // default value
-    });
-
+        });
+    }
     const vectorstore = await new RedisVectorStore(embedding, {
         redisClient: await redis_client,
         indexName: indexName,
@@ -88,7 +93,7 @@ const bootstrap = async () => {
     try{
         tools = [new TavilySearchResults({ maxResults: 1, apiKey: process.env.NEXT_PUBLIC_TAVILY_KEY })];
     } catch (error) {
-        console.log("Error in tools: ", error)
+        console.log("\nTavilySearch not available.")
     }
 
     container.register("index-name", {
