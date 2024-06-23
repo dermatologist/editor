@@ -150,8 +150,8 @@ export const CompletionExtension = Extension.create({
                         let text = nodes
                             .map((node) => node.node.textContent)
                             .join("");
-                        // insert text till references that begin with ||
-                        const index = text.indexOf("||");
+                        // insert text till references that begin with ,,
+                        const index = text.indexOf(",,");
                         if (index > -1) {
                             text = text.substring(0, index);
                         }

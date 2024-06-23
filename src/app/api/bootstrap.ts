@@ -7,11 +7,11 @@ import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { createClient } from "redis";
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 import { RedisVectorStore } from "@langchain/redis";
-
+import { OllamaFunctions } from "@langchain/community/experimental/chat_models/ollama_functions";
 
 const bootstrap = async () => {
 
-    const indexName: string = "genai-derm";
+    const indexName: string = "genai-derm-disable";
 
     const redis_client: any = await createClient(
         {
@@ -33,8 +33,16 @@ const bootstrap = async () => {
 
     const ollama = new Ollama({
         baseUrl: "http://10.0.0.211:11434",
-        model: "phi3"
+        model: "phi3",
+        numPredict: 64,
+        temperature: 0.6,
     });
+
+    // const main_llm = new OllamaFunctions({
+    //     temperature: 0.6,
+    //     model: "phi3",
+    //     numPredict: 32,
+    // });
 
     const suggestion_prompt = ChatPromptTemplate.fromMessages([
     [
@@ -44,7 +52,7 @@ const bootstrap = async () => {
     ["human", `{before} [{selection}] {after}`],
     ]);
 
-    const prompt = ChatPromptTemplate.fromMessages([
+    const rag_prompt = ChatPromptTemplate.fromMessages([
     [
         "system",
         "You're a completion assistant. Given the part of a sentence and some context, try to complete the sentence using the context between square brackets. \n\n[{context}]. If context is not relevant or empty use your own knowledge to complete",
@@ -52,6 +60,15 @@ const bootstrap = async () => {
     ["human", "{question}"],
     ]);
 
+    const gen_prompt = ChatPromptTemplate.fromMessages([
+    [
+        "system",
+        "Complete the sentence without repeating it ",
+    ],
+    ["human", "{question}"],
+    ]);
+
+    const prompt = gen_prompt;
     // Define the tools the agent will have access to.
     const tools = [new TavilySearchResults({ maxResults: 1, apiKey: process.env.NEXT_PUBLIC_TAVILY_KEY })];
 
