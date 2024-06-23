@@ -24,7 +24,7 @@ export const POST = withRateLimit(async (req) => {
     */
 
     const suggestions = Array.from(new Set(outputText.map(
-        (item: any) =>  selection + " [" + item.title + " | " + item.url + " | " + item.content + " | " + item.score + "] ")));
+        (item: any) =>  selection + " [" + item.title + " | " + item.url + " | " + item.content.substring(0, 10) + "... | " + item.score + "] ")));
 
     console.log("--SUGGESTION_RESPONSE--");
     console.log(suggestions);

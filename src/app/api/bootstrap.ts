@@ -7,8 +7,8 @@ import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { createClient } from "redis";
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 import { RedisVectorStore } from "@langchain/redis";
-import { VertexAI } from "@langchain/google-vertexai";
-import { GoogleVertexAIEmbeddings } from "@langchain/community/embeddings/googlevertexai";
+// import { VertexAI } from "@langchain/google-vertexai";
+// import { GoogleVertexAIEmbeddings } from "@langchain/community/embeddings/googlevertexai";
 
 const bootstrap = async () => {
 
@@ -16,14 +16,14 @@ const bootstrap = async () => {
 
     let main_llm = null;
 
-    try{
-    const vertex = new VertexAI({
-        temperature: 0.6,
-        maxOutputTokens: 256,
-        model: "gemini-pro",
-    })
-    main_llm = vertex;
-    } catch (error) {
+    // try{
+    // const vertex = new VertexAI({
+    //     temperature: 0.6,
+    //     maxOutputTokens: 256,
+    //     model: "gemini-pro",
+    // })
+    // main_llm = vertex;
+    // } catch (error) {
     const ollama = new Ollama({
         baseUrl: "http://10.0.0.211:11434",
         model: "phi3",
@@ -31,7 +31,7 @@ const bootstrap = async () => {
         temperature: 0.6,
     });
     main_llm = ollama;
-    }
+    // }
 
     const redis_client: any = await createClient(
         {
@@ -42,15 +42,15 @@ const bootstrap = async () => {
     .connect();
 
     let embedding: any = null;
-    try {
-        embedding = new GoogleVertexAIEmbeddings();
-    } catch (error) {
+    // try {
+    //     embedding = new GoogleVertexAIEmbeddings();
+    // } catch (error) {
 
         embedding =  new OllamaEmbeddings({
         model: "all-minilm",
         baseUrl: "http://10.0.0.211:11434", // default value
         });
-    }
+    // }
     const vectorstore = await new RedisVectorStore(embedding, {
         redisClient: await redis_client,
         indexName: indexName,
