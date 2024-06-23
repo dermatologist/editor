@@ -29,6 +29,7 @@ export async function POST(req: Request) {
           const docs = await textSplitter.createDocuments([text]);
           for (const doc of docs) {
               doc.metadata.title = zipEntry.entryName;
+              doc.metadata.id = btoa(zipEntry.entryName);
           }
           await redisRetriever.put_docs(docs);
           console.log(text);
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
       const docs = await textSplitter.createDocuments([text]);
       for (const doc of docs) {
           doc.metadata.title = file.name;
+          doc.metadata.id = btoa(file.name);
       }
       await redisRetriever.put_docs(docs);
       console.log(text);

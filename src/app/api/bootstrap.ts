@@ -12,7 +12,7 @@ import { GoogleVertexAIEmbeddings } from "@langchain/community/embeddings/google
 
 const bootstrap = async () => {
 
-    const indexName: string = "genai-derm-disable";
+    const indexName: string = "docs";
 
     let main_llm = null;
 
