@@ -7,11 +7,31 @@ import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { createClient } from "redis";
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 import { RedisVectorStore } from "@langchain/redis";
-import { OllamaFunctions } from "@langchain/community/experimental/chat_models/ollama_functions";
+// import { VertexAI } from "@langchain/google-vertexai";
+import { VertexAI } from "@langchain/google-vertexai";
 
 const bootstrap = async () => {
 
     const indexName: string = "genai-derm-disable";
+
+    let main_llm = null;
+
+    try{
+    const vertex = new VertexAI({
+        temperature: 0.6,
+        maxOutputTokens: 256,
+        model: "gemini-pro",
+    })
+    main_llm = vertex;
+    } catch (error) {
+    const ollama = new Ollama({
+        baseUrl: "http://10.0.0.211:11434",
+        model: "phi3",
+        numPredict: 128,
+        temperature: 0.6,
+    });
+    main_llm = ollama;
+    }
 
     const redis_client: any = await createClient(
         {
@@ -31,12 +51,6 @@ const bootstrap = async () => {
         indexName: indexName,
     });
 
-    const ollama = new Ollama({
-        baseUrl: "http://10.0.0.211:11434",
-        model: "phi3",
-        numPredict: 128,
-        temperature: 0.6,
-    });
 
     // const main_llm = new OllamaFunctions({
     //     temperature: 0.6,
@@ -70,14 +84,19 @@ const bootstrap = async () => {
 
     const prompt = gen_prompt;
     // Define the tools the agent will have access to.
-    const tools = [new TavilySearchResults({ maxResults: 1, apiKey: process.env.NEXT_PUBLIC_TAVILY_KEY })];
+    let tools: any = []
+    try{
+        tools = [new TavilySearchResults({ maxResults: 1, apiKey: process.env.NEXT_PUBLIC_TAVILY_KEY })];
+    } catch (error) {
+        console.log("Error in tools: ", error)
+    }
 
     container.register("index-name", {
         useValue: indexName,
     });
 
     container.register("main-llm", {
-        useValue: ollama,
+        useValue: main_llm,
     });
 
 
