@@ -2,7 +2,7 @@ import { BaseChain } from "medpromptjs";
 import { Document } from "@langchain/core/documents";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableMap, RunnablePassthrough, RunnableSequence, RunnableLambda } from "@langchain/core/runnables";
-import { RedisRetreiver } from './retreiver'
+import { RedisRetreiver } from '../retreiver'
 
 export class ChainService extends BaseChain {
 

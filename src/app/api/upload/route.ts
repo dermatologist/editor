@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import fs from "node:fs/promises";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { RedisRetreiver } from "../llmcompletion/retreiver";
+import { RedisRetreiver } from "../retreiver";
 import {pdfToText} from 'pdf-ts';
 import AdmZip  from 'adm-zip';
 import bootstrap from "../bootstrap";
