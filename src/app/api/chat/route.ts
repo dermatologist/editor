@@ -15,10 +15,7 @@ export const POST = withRateLimit(async (req) => {
     const last_message = messages[messages.length - 1];
     const question = last_message.content;
     console.log("chat input", question);
-    // const { text } = await req.json();
-
-    // console.log("chat input", text);
-
+ 
     const chain = await new QAService(await bootstrap(), "", "", "");
 
     const _reply = await chain.ragChain({question: question});

@@ -80,7 +80,7 @@ function SidebarApp() {
 
         <form className="form-control items-center" onSubmit={(e) => handleSubmit(e)}>
           <div className="input-group max-w-full w-[800px] relative flex items-center">
-            {isTyping && <small className='absolute -top-5 left-0.5 animate-pulse'>ChatGPT Extension is typing...</small>}
+            {isTyping && <small className='absolute -top-5 left-0.5 animate-pulse'>ResearchGPT Extension is typing...</small>}
 
             <input type="text" placeholder="Ask ChatGPT a question..." className="input input-bordered flex-grow mr-2.5" required />
             <button className="btn btn-square" type="submit">

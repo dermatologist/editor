@@ -12,7 +12,7 @@ import { RedisVectorStore } from "@langchain/redis";
 
 const bootstrap = async () => {
 
-    const indexName: string = "docs";
+    const indexName: string = "genai-derm";
 
     let main_llm = null;
 
