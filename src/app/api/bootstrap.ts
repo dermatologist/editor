@@ -74,9 +74,9 @@ const bootstrap = async () => {
     const rag_prompt = ChatPromptTemplate.fromMessages([
     [
         "system",
-        "You're a completion assistant. Given the part of a sentence and some context, try to complete the sentence using the context between square brackets. \n\n[{context}]. If context is not relevant or empty use your own knowledge to complete",
+        "You're a research assistant. You have access to the following research material\n\n[{context}].",
     ],
-    ["human", "{question}"],
+    ["human", "Please tell me: {question}"],
     ]);
 
     const gen_prompt = ChatPromptTemplate.fromMessages([
@@ -86,6 +86,7 @@ const bootstrap = async () => {
     ],
     ["human", "Expand and complete {question}"],
     ]);
+
 
     const prompt = gen_prompt;
     // Define the tools the agent will have access to.
@@ -111,6 +112,10 @@ const bootstrap = async () => {
 
     container.register("suggestion-prompt", {
         useValue: suggestion_prompt,
+    });
+
+    container.register("rag-prompt", {
+        useValue: rag_prompt,
     });
 
     container.register("tools", {
