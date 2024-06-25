@@ -50,7 +50,7 @@ function SidebarApp() {
     });
 
     let reply = {
-      content: completion.completionText,
+      content: completion.data.completionText,
       role: "assistant"
     }
 
