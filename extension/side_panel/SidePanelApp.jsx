@@ -71,7 +71,7 @@ function SidebarApp() {
                       <img src={msg.role === 'assistant' ? researchgptLogo : extensionJsLogo} />
                     </div>
                   </div>
-                  <div className="chat-bubble">{msg.content}</div>
+                  <div className="chat-bubble" dangerouslySetInnerHTML={{__html: msg.content}}></div>
                 </div>
               )
             })
