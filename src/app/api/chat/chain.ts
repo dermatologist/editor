@@ -17,7 +17,7 @@ export class QAService extends BaseChain {
             docs
             .map(
                 (doc: Document) =>
-                `,, ${doc.metadata.title} - ${doc.pageContent}`
+                `<br /> * ${doc.metadata.title} - ${doc.pageContent}`
             )
             .join("\n\n")
         );
