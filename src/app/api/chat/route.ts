@@ -20,7 +20,7 @@ export const POST = withRateLimit(async (req) => {
 
     const _reply = await chain.ragChain({question: question});
 
-    const outputText = _reply.text.replace("\n", "").replace(/\s\s+/g, ' ') + "<br /><br />" + _reply.context;
+    const outputText = _reply.text.replace("\n", "").replace(/\s\s+/g, ' ') + "... <br /><br />" + _reply.context;
 
     console.log("--CHAT_RAW_RESPONSE--");
     console.log(outputText);
