@@ -28,7 +28,7 @@ export class QAService extends BaseChain {
     newRetreiver = async (ques: any) => {
         try {
             const vectorstore = await new RedisRetreiver(this.container, "", "").get_vectorstore();
-            const documents = await vectorstore.similaritySearch(ques.question, 5);
+            const documents = await vectorstore.similaritySearch(ques.question, 10);
             let context: Document[] = [];
             // Remove duplicate documents
             const uniqueDocs = new Set();
