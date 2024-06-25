@@ -41,7 +41,7 @@ function SidebarApp() {
     //   messages: [...newMessages],
     // });
 
-    const { completion }  = await axios.post('http://localhost:3000/api/chat', {
+    const completion  = await axios.post('http://localhost:3000/api/chat', {
       messages: newMessages
     }, {
       headers: {
@@ -49,7 +49,12 @@ function SidebarApp() {
       }
     });
 
-    setMessages([...newMessages, completion.completionText]);
+    let reply = {
+      content: completion.completionText,
+      role: "assistant"
+    }
+
+    setMessages([...newMessages, reply]);
     setIsTyping(false);
   }
 

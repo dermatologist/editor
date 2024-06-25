@@ -11,14 +11,17 @@ export const POST = withRateLimit(async (req) => {
         if (done) break;
         buffer += new TextDecoder().decode(value);
     }
-    console.log("chat input", buffer);
+    const messages = JSON.parse(buffer).messages;
+    const last_message = messages[messages.length - 1];
+    const question = last_message.content;
+    console.log("chat input", question);
     // const { text } = await req.json();
 
     // console.log("chat input", text);
 
     const chain = await new QAService(await bootstrap(), "", "", "");
 
-    const _reply = await chain.ragChain(buffer);
+    const _reply = await chain.ragChain({question: question});
 
     const outputText = _reply.text.replace("\n", "").replace(/\s\s+/g, ' ') + _reply.context;
 
