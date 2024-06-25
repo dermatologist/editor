@@ -4,13 +4,21 @@ import bootstrap from "../bootstrap";
 import { QAService } from "./chain";
 
 export const POST = withRateLimit(async (req) => {
-    const { text } = await req.json();
+    const reader = req.body.getReader();
+    let buffer = "";
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += new TextDecoder().decode(value);
+    }
+    console.log("chat input", buffer);
+    // const { text } = await req.json();
 
-    console.log("chat input", text);
+    // console.log("chat input", text);
 
     const chain = await new QAService(await bootstrap(), "", "", "");
 
-    const _reply = await chain.ragChain({'question': text})
+    const _reply = await chain.ragChain(buffer);
 
     const outputText = _reply.text.replace("\n", "").replace(/\s\s+/g, ' ') + _reply.context;
 

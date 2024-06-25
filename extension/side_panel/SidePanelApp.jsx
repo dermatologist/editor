@@ -1,26 +1,20 @@
 import { useState } from 'react';
-import OpenAI from "openai";
+// import OpenAI from "openai";
 import chatgptLogo from '../images/chatgpt.png'
 import extensionJsLogo from '../images/extensionjs.png'
+import axios from 'axios';
 
-const openai = new OpenAI({
-  apiKey: process.env.EXTENSION_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
+// const openai = new OpenAI({
+//   apiKey: process.env.EXTENSION_OPENAI_API_KEY,
+//   dangerouslyAllowBrowser: true,
+// });
 
 function SidebarApp() {
   const [messages, setMessages] = useState([
     {
       content: (
-        "Hello there! This is your ChatGPT extension sample, " +
-        "built with React, Tailwind.css, and DaisyUI. " +
-        "For it to work, create a .env file with your EXTENSION_OPENAI_API_KEY. " +
-        "You can get an API key from OpenAI's website."
+        "Ask me a question below"
       ),
-      role: "assistant"
-    },
-    {
-      content: "https://platform.openai.com/api-keys",
       role: "assistant"
     },
   ]);
@@ -42,12 +36,20 @@ function SidebarApp() {
     setIsTyping(true);
     e.target.reset();
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [...newMessages],
+    // const completion = await openai.chat.completions.create({
+    //   model: "gpt-3.5-turbo",
+    //   messages: [...newMessages],
+    // });
+
+    const { completion }  = await axios.post('http://localhost:3000/api/chat', {
+      messages: newMessages
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
 
-    setMessages([...newMessages, completion.choices[0].message]);
+    setMessages([...newMessages, completion.completionText]);
     setIsTyping(false);
   }
 
