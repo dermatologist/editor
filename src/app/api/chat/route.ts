@@ -5,9 +5,9 @@ import { withRateLimit } from "../utils";
 import { QAService } from "./chain";
 
 export const POST = withRateLimit(async (req) => {
-    const reader = req.body.getReader();
+    const reader = req.body?.getReader();
     let buffer = "";
-    while (true) {
+    while (reader) {
         const { done, value } = await reader.read();
         if (done) break;
         buffer += new TextDecoder().decode(value);
