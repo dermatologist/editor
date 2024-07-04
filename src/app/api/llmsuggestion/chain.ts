@@ -1,7 +1,7 @@
-import { BaseChain } from "medpromptjs";
 import { Document } from "@langchain/core/documents";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { RunnableMap, RunnablePassthrough, RunnableSequence, RunnableLambda } from "@langchain/core/runnables";
+import { RunnableLambda,RunnableMap, RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables";
+import { BaseChain } from "medpromptjs";
 
 export class ChainService extends BaseChain {
 

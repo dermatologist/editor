@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-import { withRateLimit } from "../utils";
-import bootstrap from "../bootstrap";
-import { ChainService } from "./chain";
+
 import { SelectionContext } from "~/app/types";
+
+import bootstrap from "../bootstrap";
+import { withRateLimit } from "../utils";
+import { ChainService } from "./chain";
 
 export const POST = withRateLimit(async (req) => {
     const { before, selection, after } = (await req.json()) as SelectionContext;

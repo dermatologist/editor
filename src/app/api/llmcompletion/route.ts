@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { withRateLimit } from "../utils";
+
 import bootstrap from "../bootstrap";
+import { withRateLimit } from "../utils";
 import { ChainService } from "./chain";
 
 export const POST = withRateLimit(async (req) => {

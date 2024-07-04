@@ -1,18 +1,21 @@
 import "reflect-metadata";
-import { container } from "tsyringe";
-import {Ollama } from "@langchain/community/llms/ollama";
-import { ChatPromptTemplate} from "langchain/prompts";
-import { z } from "zod";
-import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
-import { createClient } from "redis";
+
 import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
+import {Ollama } from "@langchain/community/llms/ollama";
+import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { RedisVectorStore } from "@langchain/redis";
+import { ChatPromptTemplate} from "langchain/prompts";
+import { createClient } from "redis";
+import { container } from "tsyringe";
+import { z } from "zod";
 // import { VertexAI } from "@langchain/google-vertexai";
 // import { GoogleVertexAIEmbeddings } from "@langchain/community/embeddings/googlevertexai";
 
 const bootstrap = async () => {
 
-    const indexName: string = "genai-derm";
+    // const indexName: string = "dhanvantari--";
+    // const indexName: string = "dhanvantari--";
+    const indexName: string = process.env.NEXT_PUBLIC_INDEX_NAME || "dhanvantari--";
 
     let main_llm = null;
 
@@ -26,7 +29,7 @@ const bootstrap = async () => {
     // } catch (error) {
     const ollama = new Ollama({
         baseUrl: "http://10.0.0.211:11434",
-        model: "phi3",
+        model: "phi3:mini",
         numPredict: 128,
         temperature: 0.6,
     });

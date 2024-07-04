@@ -1,11 +1,13 @@
-import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
 import fs from "node:fs/promises";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { RedisRetreiver } from "../retreiver";
-import {pdfToText} from 'pdf-ts';
+
 import AdmZip  from 'adm-zip';
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
+import {pdfToText} from 'pdf-ts';
+
 import bootstrap from "../bootstrap";
+import { RedisRetreiver } from "../retreiver";
 
 export async function POST(req: Request) {
   try {
