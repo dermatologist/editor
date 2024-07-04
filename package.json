@@ -26,6 +26,7 @@
         "ai": "^2.2.14",
         "clsx": "^2.0.0",
         "fetch-retry": "^5.0.6",
+        "langchain": "^0.2.8",
         "lucide-react": "^0.284.0",
         "medpromptjs": "^0.2.2",
         "next": "13.5.4",

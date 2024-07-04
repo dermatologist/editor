@@ -4,7 +4,7 @@ import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
 import {Ollama } from "@langchain/community/llms/ollama";
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { RedisVectorStore } from "@langchain/redis";
-import { ChatPromptTemplate} from "langchain/prompts";
+import { ChatPromptTemplate} from "@langchain/core/prompts";
 import { createClient } from "redis";
 import { container } from "tsyringe";
 import { z } from "zod";
