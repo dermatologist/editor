@@ -1,6 +1,6 @@
 ###
 
-curl http://10.0.0.211:11434/api/embeddings -d '{
+curl http://localhost:11434/api/embeddings -d '{
   "model": "all-minilm",
   "prompt": "Llamas are members of the camelid family"
 }'
@@ -16,7 +16,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://10.0.0.211:11434/v1/chat/completions HTTP/1.1
+POST http://localhost:11434/v1/chat/completions HTTP/1.1
 Content-Type: application/json
 
 {
