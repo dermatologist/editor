@@ -28,8 +28,8 @@ const bootstrap = async () => {
     // main_llm = vertex;
     // } catch (error) {
     const ollama = new Ollama({
-        baseUrl: "http://10.0.0.211:11434",
-        model: "phi3:mini",
+        baseUrl: process.env.NEXT_PUBLIC_OLLAMA_URL || "http://localhost:11434",
+        model: process.env.NEXT_PUBLIC_OLLAMA_MODEL || "phi3:mini",
         numPredict: 128,
         temperature: 0.6,
     });
@@ -38,7 +38,7 @@ const bootstrap = async () => {
 
     const redis_client: any = await createClient(
         {
-            url: "redis://10.0.0.211:6379",
+            url: process.env.NEXT_PUBLIC_REDIS_URL || "redis://localhost:6379",
         }
         )
         .on('error', (err: any) => console.log('Redis Client Error', err))
@@ -50,8 +50,8 @@ const bootstrap = async () => {
     // } catch (error) {
 
         embedding =  new OllamaEmbeddings({
-        model: "all-minilm",
-        baseUrl: "http://10.0.0.211:11434", // default value
+        model: process.env.NEXT_PUBLIC_EMBEDDING_MODEL || "all-minilm",
+        baseUrl: process.env.NEXT_PUBLIC_OLLAMA_URL || "http://localhost:11434",
         });
     // }
     const vectorstore = await new RedisVectorStore(embedding, {
