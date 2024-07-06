@@ -46,8 +46,8 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData();
     const container = await bootstrap();
-    const template = formData.get("index") as string || "";
-    const redisRetriever = new RedisRetreiver(container, "", "", template); // Index name is sent through the template field (TODO: fix this)
+    const indexName = formData.get("index") as string || "";
+    const redisRetriever = new RedisRetreiver(container, "", "");
     let zoteroCollection = formData.get("zotero") as string;
     if (!zoteroCollection) {
       zoteroCollection = container.resolve("zotero-collectionid");
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
           doc.metadata.title =sanitize(item.title);
           doc.metadata.id = btoa(sanitize(item.title));
       }
-      await redisRetriever.put_docs(docs);
+      await redisRetriever.put_docs(docs, indexName);
     }
 
     revalidatePath("/");

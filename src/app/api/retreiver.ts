@@ -4,11 +4,9 @@ import { BaseChain } from "medpromptjs";
 export class RedisRetreiver extends BaseChain{
 
 
-    put_docs = async (docs: any) => {
-        let indexName = this.resolve("index-name");
-        if(this.template){
-            indexName = this.template; // Index name is sent through the template field (TODO: fix this)
-        }
+    put_docs = async (docs: any, indexName: string = "") => {
+        if (!indexName) {
+            indexName = this.resolve("index-name");
         console.log("Indexing to " + indexName)
         if(docs.length > 0){
             const embedding = this.resolve("embedding");

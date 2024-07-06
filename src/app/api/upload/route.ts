@@ -13,8 +13,8 @@ export async function POST(req: Request) {
   try {
     const formData = await req.formData();
     const container = await bootstrap();
-    const template = formData.get("index") as string || ""; // Index name is sent through the template field (TODO: fix this)
-    const redisRetriever = new RedisRetreiver(container, "", "", template);
+    const indexName = formData.get("index") as string || "";
+    const redisRetriever = new RedisRetreiver(container, "", "");
     const file = formData.get("file") as File;
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
               doc.metadata.title = zipEntry.entryName;
               doc.metadata.id = btoa(zipEntry.entryName);
           }
-          await redisRetriever.put_docs(docs);
+          await redisRetriever.put_docs(docs, indexName);
           console.log(text);
         }
       }
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
           doc.metadata.title = file.name;
           doc.metadata.id = btoa(file.name);
       }
-      await redisRetriever.put_docs(docs);
+      await redisRetriever.put_docs(docs, indexName);
       console.log(text);
     }
 
