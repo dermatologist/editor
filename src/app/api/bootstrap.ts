@@ -13,9 +13,7 @@ import { z } from "zod";
 
 const bootstrap = async () => {
 
-    // const indexName: string = "dhanvantari--";
-    // const indexName: string = "dhanvantari--";
-    const indexName: string = process.env.NEXT_PUBLIC_INDEX_NAME || "dhanvantari--";
+    const indexName: string = process.env.NEXT_PUBLIC_INDEX_NAME || "common";
 
     let main_llm = null;
 
