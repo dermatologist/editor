@@ -5,6 +5,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import {pdfToText} from 'pdf-ts';
+
 import bootstrap from "../bootstrap";
 import { RedisRetreiver } from "../retreiver";
 
