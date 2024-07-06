@@ -22,6 +22,8 @@ export const Editor = () => {
     const { onContentChange, removePreviewCompletion } = useCompletion();
 
     const fileInput = useRef<HTMLInputElement>(null);
+    const redisIndex = useRef<HTMLInputElement>(null);
+    const zoteroCollection = useRef<HTMLInputElement>(null);
 
     async function uploadFile(
         evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -30,8 +32,25 @@ export const Editor = () => {
 
         const formData = new FormData();
         formData.append("file", fileInput?.current?.files?.[0]!);
-
+        formData.append("index", redisIndex?.current?.value!);
+        // formData.append("zotero", zoteroCollection?.current?.value!);
         const response = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+        });
+        const result = await response.json();
+        console.log(result);
+    }
+
+    async function indexZotero(
+        evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) {
+        evt.preventDefault();
+        const formData = new FormData();
+        // formData.append("file", fileInput?.current?.files?.[0]!);
+        formData.append("index", redisIndex?.current?.value!);
+        formData.append("zotero", zoteroCollection?.current?.value!);
+        const response = await fetch("/api/zotero", {
             method: "POST",
             body: formData,
         });
@@ -45,10 +64,15 @@ export const Editor = () => {
                 <label>
                     <span>Upload a file</span>
                     <input type="file" name="file" ref={fileInput} />
+                    <input type="text" name="index" ref={redisIndex} placeholder="Redis index" />
+                    <input type="text" name="index" ref={zoteroCollection} placeholder="Zotero collection" />
+                    <button type="submit" onClick={uploadFile}>
+                        <b>| Submit file to index | </b>
+                    </button>
+                    <button type="submit" onClick={indexZotero}>
+                        <b>| Add Zotero to index </b>
+                    </button>
                 </label>
-                <button type="submit" onClick={uploadFile}>
-                    Submit
-                </button>
             </form>
             <EditorProvider
                 extensions={[

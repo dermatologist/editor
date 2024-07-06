@@ -38,7 +38,8 @@
         "react-dom": "^18",
         "react-use": "^17.4.0",
         "redis": "^4.6.14",
-        "use-debounce": "^9.0.4"
+        "use-debounce": "^9.0.4",
+        "zotero-api-client": "^0.43.1"
     },
     "devDependencies": {
         "@types/adm-zip": "^0.5.5",

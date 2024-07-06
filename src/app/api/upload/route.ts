@@ -5,14 +5,15 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import {pdfToText} from 'pdf-ts';
-
 import bootstrap from "../bootstrap";
 import { RedisRetreiver } from "../retreiver";
 
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
-    const redisRetriever = new RedisRetreiver(await bootstrap(), "", "");
+    const container = await bootstrap();
+    const template = formData.get("index") as string || ""; // Index name is sent through the template field (TODO: fix this)
+    const redisRetriever = new RedisRetreiver(container, "", "", template);
     const file = formData.get("file") as File;
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);

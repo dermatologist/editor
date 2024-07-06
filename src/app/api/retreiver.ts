@@ -5,6 +5,11 @@ export class RedisRetreiver extends BaseChain{
 
 
     put_docs = async (docs: any) => {
+        let indexName = this.resolve("index-name");
+        if(this.template){
+            indexName = this.template; // Index name is sent through the template field (TODO: fix this)
+        }
+        console.log("Indexing to " + indexName)
         if(docs.length > 0){
             const embedding = this.resolve("embedding");
             const vectorStore = await RedisVectorStore.fromDocuments(
@@ -12,7 +17,7 @@ export class RedisRetreiver extends BaseChain{
             embedding,
             {
                 redisClient: await this.resolve("redis-client"),
-                indexName: this.resolve("index-name"),
+                indexName: indexName,
             }
             );
             return vectorStore;

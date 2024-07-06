@@ -137,6 +137,18 @@ const bootstrap = async () => {
         useValue: vectorstore,
     });
 
+    container.register("zotero-key", {
+        useValue: process.env.NEXT_PUBLIC_ZOTERO_KEY || "nokey",
+    });
+
+    container.register("zotero-userid", {
+        useValue: process.env.NEXT_PUBLIC_ZOTERO_USERID || "nouser",
+    });
+
+    container.register("zoter-collectionid", {
+        useValue: process.env.NEXT_PUBLIC_ZOTERO_COLLECTIONID || "nocollection",
+    });
+
     return container;
 }
 

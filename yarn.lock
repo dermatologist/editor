@@ -22,7 +22,15 @@
     node-fetch "^2.6.7"
     web-streams-polyfill "^3.2.1"
 
-"@babel/runtime@^7.1.2":
+"@babel/runtime-corejs3@^7.22.11":
+  version "7.24.7"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.24.7.tgz#65a99097e4c28e6c3a174825591700cc5abd710e"
+  integrity sha512-eytSX6JLBY6PVAeQa2bFlDx/7Mmln/gaEpsit5a3WEvjGfiIytEsgAwuIXCPM0xvw0v0cJn3ilq0/TvXrW0kgA==
+  dependencies:
+    core-js-pure "^3.30.2"
+    regenerator-runtime "^0.14.0"
+
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.22.11":
   version "7.24.7"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.24.7.tgz#f4f0d5530e8dbdf59b3451b9b3e594b6ba082e12"
   integrity sha512-UwgBRMjJP+xv857DCngvqXI3Iq6J4v0wXmwc6sapg+zyhbwmQX67LUEFrkK5tbyJ30jGuG3ZvWpBiB9LCy1kWw==
@@ -1247,6 +1255,11 @@ copy-to-clipboard@^3.3.1:
   dependencies:
     toggle-selection "^1.0.6"
 
+core-js-pure@^3.30.2:
+  version "3.37.1"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.37.1.tgz#2b4b34281f54db06c9a9a5bd60105046900553bd"
+  integrity sha512-J/r5JTHSmzTxbiYYrzXg9w1VpqrYt+gexenBE9pugeyhwPZTAEJddyiReJWsLO6uNQ8xJZFbod6XC7KKwatCiA==
+
 cors@^2.8.5:
   version "2.8.5"
   resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.5.tgz#eac11da51592dd86b9f06f6e7ac293b3df875d29"
@@ -1259,6 +1272,13 @@ crelt@^1.0.0:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/crelt/-/crelt-1.0.6.tgz#7cc898ea74e190fb6ef9dae57f8f81cf7302df72"
   integrity sha512-VQ2MBenTq1fWZUH9DJNGti7kKv6EeAuYr3cLwxUWhIu1baTaXh4Ib5W2CqHVqib4/MqbYGJqiL3Zb8GJZr3l4g==
+
+cross-fetch@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-4.0.0.tgz#f037aef1580bb3a1a35164ea2a848ba81b445983"
+  integrity sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==
+  dependencies:
+    node-fetch "^2.6.12"
 
 cross-spawn@^7.0.0, cross-spawn@^7.0.2:
   version "7.0.3"
@@ -3106,7 +3126,7 @@ node-ensure@^0.0.0:
   resolved "https://registry.yarnpkg.com/node-ensure/-/node-ensure-0.0.0.tgz#ecae764150de99861ec5c810fd5d096b183932a7"
   integrity sha512-DRI60hzo2oKN1ma0ckc6nQWlHU69RH6xN0sjQTjMpChPfTYvKZdcQFfdYK2RWbJcKyUizSIy/l8OTGxMAM1QDw==
 
-node-fetch@^2.6.7:
+node-fetch@^2.6.12, node-fetch@^2.6.7:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
@@ -4036,6 +4056,11 @@ source-map@^0.6.1:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
+spark-md5@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/spark-md5/-/spark-md5-3.0.2.tgz#7952c4a30784347abcee73268e473b9c0167e3fc"
+  integrity sha512-wcFzz9cDfbuqe0FZzfi2or1sgyIrsDwmPwfZC4hiNidPdPINjeUwNfv5kldczoEAcjl9Y1L3SM7Uz2PUEQzxQw==
+
 sswr@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/sswr/-/sswr-2.0.0.tgz#db5e1f7c44addb8316de8e7efe23b7ea2cba090d"
@@ -4702,3 +4727,13 @@ zod@^3.22.3, zod@^3.22.4:
   version "3.23.8"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.23.8.tgz#e37b957b5d52079769fb8097099b592f0ef4067d"
   integrity sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==
+
+zotero-api-client@^0.43.1:
+  version "0.43.1"
+  resolved "https://registry.yarnpkg.com/zotero-api-client/-/zotero-api-client-0.43.1.tgz#f4c028a2ded79166079345655dfe1da3f96bfa4e"
+  integrity sha512-ZtUeIbA4p07ChzJEpMiKNdgwSosRgGB6oNzSiUjOEbHNLuBS58wT0Krbop6gQgJSITV9jjXjz0PJ0aGMV57TWw==
+  dependencies:
+    "@babel/runtime" "^7.22.11"
+    "@babel/runtime-corejs3" "^7.22.11"
+    cross-fetch "^4.0.0"
+    spark-md5 "^3.0.2"
