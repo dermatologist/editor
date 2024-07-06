@@ -7,6 +7,7 @@ export class RedisRetreiver extends BaseChain{
     put_docs = async (docs: any, indexName: string = "") => {
         if (!indexName) {
             indexName = this.resolve("index-name");
+        }
         console.log("Indexing to " + indexName)
         if(docs.length > 0){
             const embedding = this.resolve("embedding");
