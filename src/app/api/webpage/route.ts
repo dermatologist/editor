@@ -13,6 +13,18 @@ export async function POST(req: Request) {
     return text.replace(/[^a-zA-Z0-9\s]/g, "");
   }
 
+  const getWebPage = async (url: string) => {
+    let items = [];
+    const response = await axios.get(url);
+    const text = convert(response.data);
+    const item = {
+      title: url,
+      content: text,
+    }
+    items.push(item);
+    console.log(item);
+    return items;
+  }
 
   ///
 
@@ -23,21 +35,16 @@ export async function POST(req: Request) {
     const redisRetriever = new RedisRetreiver(container, "", "");
     let webPage = formData.get("webpage") as string;
     let items: { title: string; content: any; }[] = [];
+    try{
+     items = await getWebPage(webPage)
+    } catch(e){
+      console.log("Webpage Error"  + e)
+    }
     const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 256, chunkOverlap: 20});
-    (async () => {
-      const response = await axios.get(webPage);
-      const text = convert(response.data);
-      const item = {
-        title: webPage,
-        content: text,
-      }
-      console.log(text);
-      items.push(item);
-    })();
     for (const item of items) {
       const docs = await textSplitter.createDocuments([sanitize(item.content)]);
       for (const doc of docs) {
-          doc.metadata.title =sanitize(item.title);
+          doc.metadata.title =item.title;
           doc.metadata.id = btoa(sanitize(item.title));
       }
       await redisRetriever.put_docs(docs, indexName);
