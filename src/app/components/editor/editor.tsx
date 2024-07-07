@@ -83,6 +83,7 @@ export const Editor = () => {
                     <input type="text" name="index" ref={redisIndex} placeholder="Redis index" />
                     <input type="text" name="zotero" ref={zoteroCollection} placeholder="Zotero collection" />
                     <input type="text" name="webpage" ref={webPage} placeholder="Webpage" />
+                    <br />
                     <button type="submit" onClick={uploadFile}>
                         <b>| Submit file to index | </b>
                     </button>
@@ -90,7 +91,7 @@ export const Editor = () => {
                         <b>| Add Zotero to index | </b>
                     </button>
                     <button type="submit" onClick={indexWebpage}>
-                        <b>| Add Webpage to index</b>
+                        <b>| Add Webpage to index |</b>
                     </button>
                 </label>
             </form>
