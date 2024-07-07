@@ -74,6 +74,20 @@ export const Editor = () => {
         console.log(result);
     }
 
+    async function setIndex(
+        evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) {
+        evt.preventDefault();
+        const formData = new FormData();
+        formData.append("index", redisIndex?.current?.value!);
+        const response = await fetch("/api/setindex", {
+            method: "POST",
+            body: formData,
+        });
+        const result = await response.json();
+        console.log(result);
+    }
+
     return (
         <div className="relative">
             <form className="flex flex-col gap-4">
@@ -92,6 +106,9 @@ export const Editor = () => {
                     </button>
                     <button type="submit" onClick={indexWebpage}>
                         <b>| Add Webpage to index |</b>
+                    </button>
+                    <button type="submit" onClick={setIndex}>
+                        <b>| Setindex |</b>
                     </button>
                 </label>
             </form>
