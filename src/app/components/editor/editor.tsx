@@ -58,6 +58,21 @@ export const Editor = () => {
         console.log(result);
     }
 
+    async function indexWebpage(
+        evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) {
+        evt.preventDefault();
+        const formData = new FormData();
+        formData.append("index", redisIndex?.current?.value!);
+        formData.append("url", zoteroCollection?.current?.value!);
+        const response = await fetch("/api/webpage", {
+            method: "POST",
+            body: formData,
+        });
+        const result = await response.json();
+        console.log(result);
+    }
+
     return (
         <div className="relative">
             <form className="flex flex-col gap-4">
@@ -65,12 +80,16 @@ export const Editor = () => {
                     <span>Upload a file</span>
                     <input type="file" name="file" ref={fileInput} />
                     <input type="text" name="index" ref={redisIndex} placeholder="Redis index" />
-                    <input type="text" name="index" ref={zoteroCollection} placeholder="Zotero collection" />
+                    <input type="text" name="zotero" ref={zoteroCollection} placeholder="Zotero collection" />
+                    <input type="text" name="webpage" ref={zoteroCollection} placeholder="Webpage" />
                     <button type="submit" onClick={uploadFile}>
                         <b>| Submit file to index | </b>
                     </button>
                     <button type="submit" onClick={indexZotero}>
-                        <b>| Add Zotero to index </b>
+                        <b>| Add Zotero to index | </b>
+                    </button>
+                    <button type="submit" onClick={indexWebpage}>
+                        <b>| Add Webpage to index</b>
                     </button>
                 </label>
             </form>
