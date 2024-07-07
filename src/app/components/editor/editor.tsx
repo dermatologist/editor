@@ -24,6 +24,7 @@ export const Editor = () => {
     const fileInput = useRef<HTMLInputElement>(null);
     const redisIndex = useRef<HTMLInputElement>(null);
     const zoteroCollection = useRef<HTMLInputElement>(null);
+    const webPage = useRef<HTMLInputElement>(null);
 
     async function uploadFile(
         evt: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -64,7 +65,7 @@ export const Editor = () => {
         evt.preventDefault();
         const formData = new FormData();
         formData.append("index", redisIndex?.current?.value!);
-        formData.append("url", zoteroCollection?.current?.value!);
+        formData.append("webpage", webPage?.current?.value!);
         const response = await fetch("/api/webpage", {
             method: "POST",
             body: formData,
@@ -81,7 +82,7 @@ export const Editor = () => {
                     <input type="file" name="file" ref={fileInput} />
                     <input type="text" name="index" ref={redisIndex} placeholder="Redis index" />
                     <input type="text" name="zotero" ref={zoteroCollection} placeholder="Zotero collection" />
-                    <input type="text" name="webpage" ref={zoteroCollection} placeholder="Webpage" />
+                    <input type="text" name="webpage" ref={webPage} placeholder="Webpage" />
                     <button type="submit" onClick={uploadFile}>
                         <b>| Submit file to index | </b>
                     </button>

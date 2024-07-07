@@ -1,6 +1,9 @@
+import axios from "axios";
+import { convert } from "html-to-text";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+
 import bootstrap from "../bootstrap";
 import { RedisRetreiver } from "../retreiver";
 
@@ -18,17 +21,19 @@ export async function POST(req: Request) {
     const container = await bootstrap();
     const indexName = formData.get("index") as string || "";
     const redisRetriever = new RedisRetreiver(container, "", "");
-    let zoteroCollection = formData.get("zotero") as string;
-    if (!zoteroCollection) {
-      zoteroCollection = container.resolve("zotero-collectionid");
-    }
+    let webPage = formData.get("webpage") as string;
     let items: { title: string; content: any; }[] = [];
-    try{
-     items = await zotero(container.resolve("zotero-key"), container.resolve("zotero-userid"), zoteroCollection)
-    }catch(e){
-      console.log("Zotero Error"  + e)
-    }
     const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 256, chunkOverlap: 20});
+    (async () => {
+      const response = await axios.get(webPage);
+      const text = convert(response.data);
+      const item = {
+        title: webPage,
+        content: text,
+      }
+      console.log(text);
+      items.push(item);
+    })();
     for (const item of items) {
       const docs = await textSplitter.createDocuments([sanitize(item.content)]);
       for (const doc of docs) {
