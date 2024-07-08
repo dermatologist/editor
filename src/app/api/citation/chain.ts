@@ -3,7 +3,7 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableLambda,RunnableMap, RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables";
 import { BaseChain } from "medpromptjs";
 
-export class ChainService extends BaseChain {
+export class CitationService extends BaseChain {
 
 
 

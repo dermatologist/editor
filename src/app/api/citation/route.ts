@@ -4,13 +4,13 @@ import { SelectionContext } from "~/app/types";
 
 import bootstrap from "../bootstrap";
 import { withRateLimit } from "../utils";
-import { ChainService } from "./chain";
+import { CitationService } from "./chain";
 
 export const POST = withRateLimit(async (req) => {
     const { before, selection, after } = (await req.json()) as SelectionContext;
 
 
-    const chain = await new ChainService(await bootstrap(), "", "", "");
+    const chain = await new CitationService(await bootstrap(), "", "", "");
 
 
     const _reply = await chain.Chain({
@@ -26,7 +26,7 @@ export const POST = withRateLimit(async (req) => {
     */
 
     const suggestions = Array.from(new Set(outputText.map(
-        (item: any) =>  selection + " [" + item.title + " | " + item.url + " | " + item.content.substring(0, 100) + "... | " + item.score + "] ")));
+        (item: any) =>  " [" + item.title + " | " + item.url + " | " + item.content.substring(0, 50) + "... | " + item.score + "] ")));
 
     console.log("--SUGGESTION_RESPONSE--");
     console.log(suggestions);
