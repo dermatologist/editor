@@ -2,6 +2,7 @@ import { Document } from "@langchain/core/documents";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { RunnableLambda,RunnableMap, RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables";
 import { BaseChain } from "medpromptjs";
+
 import { ChainService } from "../llmcompletion/chain";
 export class CitationService extends BaseChain {
 
