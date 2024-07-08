@@ -17,7 +17,27 @@ export const POST = withRateLimit(async (req) => {
         input: selection
     });
 
-    const outputText = JSON.parse(_reply)
+    const vectorstoreMatches = _reply[0].vectorstore.replace("\n", "").split(",,")
+    console.log("--VECTORSTORE_RESPONSE--");
+    console.log(vectorstoreMatches);
+    const travility = _reply[0].travility;
+
+    // Parse the travility response
+    const outputText = JSON.parse(travility)
+
+    // for loop to iterate over the vectorstoreMatches
+    // and append the matches to the outputText
+    for (let i = 0; i < vectorstoreMatches.length; i++) {
+        const match = vectorstoreMatches[i].split(" - ");
+        if(match.length < 2) continue;
+        outputText.push({
+            title: match[0],
+            content: match[1],
+            url: "",
+            score: 1,
+            raw_content: null,
+        });
+    }
 
     console.log("--SUGGESTION_RAW_RESPONSE--");
     console.log(outputText);
