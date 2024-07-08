@@ -14,6 +14,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const container = await bootstrap();
     const indexName = formData.get("index") as string || "";
+    container.clearInstances();
     container.register("index-name", {
         useValue: indexName,
     });
