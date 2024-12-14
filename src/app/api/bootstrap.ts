@@ -1,10 +1,10 @@
 import "reflect-metadata";
 
-import { OllamaEmbeddings } from "@langchain/ollama";
-import {Ollama } from "@langchain/ollama";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { ChatPromptTemplate} from "@langchain/core/prompts";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { OllamaEmbeddings } from "@langchain/ollama";
+import {Ollama } from "@langchain/ollama";
 import { RedisVectorStore } from "@langchain/redis";
 import { createClient } from "redis";
 import { container } from "tsyringe";
