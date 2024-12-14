@@ -1,7 +1,8 @@
 import "reflect-metadata";
 
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
-import {Ollama } from "@langchain/community/llms/ollama";
+import { OllamaEmbeddings } from "@langchain/ollama";
+import {Ollama } from "@langchain/ollama";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { ChatPromptTemplate} from "@langchain/core/prompts";
 import { RedisVectorStore } from "@langchain/redis";
@@ -18,10 +19,11 @@ const bootstrap = async (name: string = "") => {
         return container;
     else
         container.clearInstances();
-    
+
     const indexName: string = name || process.env.NEXT_PUBLIC_INDEX_NAME || "common";
 
-    let main_llm = null;
+    let llm_choice: string = process.env.NEXT_PUBLIC_LLM || "ollama";
+    let main_llm: any = null;
 
     // try{
     // const vertex = new VertexAI({
@@ -37,8 +39,26 @@ const bootstrap = async (name: string = "") => {
         numPredict: 128,
         temperature: 0.6,
     });
-    main_llm = ollama;
-    // }
+
+    const gemini = new ChatGoogleGenerativeAI({
+        model: "gemini-1.5-pro",
+        temperature: 0.6,
+        maxRetries: 1,
+        apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
+        // other params...
+    });
+
+    if (llm_choice === "ollama") {
+        main_llm = ollama;
+    } else {
+        main_llm = gemini;
+    }
+
+    if (llm_choice === "half") {
+        // get a random choice
+        const choices = [ollama, gemini];
+        main_llm = choices[Math.floor(Math.random() * choices.length)];
+    }
 
     const redis_client: any = await createClient(
         {
