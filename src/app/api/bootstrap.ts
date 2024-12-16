@@ -25,6 +25,7 @@ const bootstrap = async (name: string = "") => {
     const indexName: string = name || process.env.NEXT_PUBLIC_INDEX_NAME || "common";
 
     let llm_choice: string = process.env.NEXT_PUBLIC_LLM || "ollama";
+    let gemini_model: string = process.env.NEXT_PUBLIC_GEMINI_MODEL || "gemini-1.5-flash";
     let main_llm: any = null;
 
     // try{
@@ -43,7 +44,7 @@ const bootstrap = async (name: string = "") => {
     });
 
     const gemini = new ChatGoogleGenerativeAI({
-        model: "gemini-1.5-pro",
+        model: gemini_model,
         temperature: 0.6,
         maxRetries: 1,
         apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",

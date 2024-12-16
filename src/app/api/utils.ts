@@ -6,14 +6,14 @@ export const withRateLimit =
     (handler: (req: Request, res: Response) => Promise<NextResponse>) =>
     async (req: Request, res: Response) => {
         if (
-            process.env.NODE_ENV === "production" &&
-            process.env.KV_REST_API_URL &&
-            process.env.KV_REST_API_TOKEN
+            // If process.env.NEXT_PUBLIC_LLM is gemini
+            process.env.NEXT_PUBLIC_LLM === "gemini" 
         ) {
             const ip = req.headers.get("x-forwarded-for");
             const ratelimit = new Ratelimit({
                 redis: kv,
-                limiter: Ratelimit.slidingWindow(5, "10s"),
+                // 5 requests per 60 seconds
+                limiter: Ratelimit.slidingWindow(5, "60 s"),
             });
 
             const { success, limit, reset, remaining } = await ratelimit.limit(
