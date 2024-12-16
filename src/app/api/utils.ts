@@ -1,5 +1,6 @@
 import { Ratelimit } from "@upstash/ratelimit";
-import { kv } from "@vercel/kv";
+// import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { NextResponse } from "next/server";
 
 export const withRateLimit =
@@ -7,13 +8,17 @@ export const withRateLimit =
     async (req: Request, res: Response) => {
         if (
             // If process.env.NEXT_PUBLIC_LLM is gemini
-            process.env.NEXT_PUBLIC_LLM === "gemini" 
+            process.env.NEXT_PUBLIC_LLM === "gemini"
         ) {
             const ip = req.headers.get("x-forwarded-for");
             const ratelimit = new Ratelimit({
-                redis: kv,
+                redis: new Redis({
+                    url: "redis://10.0.0.211:6379",
+                    token: "********",
+                }),
                 // 5 requests per 60 seconds
                 limiter: Ratelimit.slidingWindow(5, "60 s"),
+                prefix: "@upstash/ratelimit",
             });
 
             const { success, limit, reset, remaining } = await ratelimit.limit(
