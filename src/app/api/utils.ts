@@ -13,7 +13,7 @@ export const withRateLimit =
             const ip = req.headers.get("x-forwarded-for");
             const ratelimit = new Ratelimit({
                 redis: new Redis({
-                    url: process.env.NEXT_PUBLIC_REDIS_WEB_URL || "redis://10.0.0.211:6379",
+                    url: process.env.NEXT_PUBLIC_REDIS_WEB_URL || "https://redis:6379",
                     token: "********",
                 }),
                 // 5 requests per 60 seconds
