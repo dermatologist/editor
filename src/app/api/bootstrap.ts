@@ -47,6 +47,7 @@ const bootstrap = async (name: string = "") => {
         temperature: 0.6,
         maxRetries: 1,
         apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
+        maxOutputTokens: process.env.NEXT_PUBLIC_MAX_OUTPUT_TOKENS ? parseInt(process.env.NEXT_PUBLIC_MAX_OUTPUT_TOKENS) : 256,
         // other params...
     });
 
