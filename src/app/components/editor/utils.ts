@@ -20,16 +20,28 @@ export const fetchSuggestions = async (context: SelectionContext) => {
     return response.json() as Promise<string[]>;
 };
 
-export const fetchCompletion = async (text: string) => {
+export const fetchCompletion = async (text: string, llm?: string) => {
     const response = await fetchWithRetry("/api/llmcompletion", {
         retryOn: [429],
         retryDelay: exponentialBackoff,
         retries: 5,
         method: "POST",
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, llm }),
     });
 
     return (await response.json()).completionText as string;
+};
+
+export const fetchSentences = async (text: string, llm?: string) => {
+    const response = await fetchWithRetry("/api/sentences", {
+        retryOn: [429],
+        retryDelay: exponentialBackoff,
+        retries: 5,
+        method: "POST",
+        body: JSON.stringify({ text, llm }),
+    });
+
+    return (await response.json()).sentences as string;
 };
 
 export const getTextForSlice = (node: Node) => {
@@ -108,12 +120,20 @@ export const useSuggestions = () => {
         setContext(null);
     }, []);
 
-    const debouncedGetSuggestions = useDebouncedCallback(
-        async (editor: IEditor, transaction: Transaction) => {
+    const manualGetSuggestions = React.useCallback(
+        async (editor: IEditor) => {
+            const { from, to } = editor.state.selection;
+            
+            if (from === to) {
+                // No text selected, show warning
+                alert("Please select some text to get citation suggestions.");
+                return;
+            }
+
             const context = getSelectionContext(
                 editor.state.doc,
-                transaction.selection.from,
-                transaction.selection.to
+                from,
+                to
             );
 
             setContext(context);
@@ -131,55 +151,32 @@ export const useSuggestions = () => {
             const transactionId = Date.now();
             transactionRef.current = transactionId;
 
-            let suggestions: string[] = [];
             if(fstatus === "idle") {
                 setFstatus("fetching");
                 fetchSuggestions(context).then((result) => {
-                    suggestions = result;
                     setFstatus("idle");
                     if (
                         transactionId === transactionRef.current &&
                         statusRef.current === "fetching"
                     ) {
-                        setSuggestions(suggestions);
+                        setSuggestions(result);
                         setStatus("done");
                     }
                 }).catch((error) => {
                     console.error(error);
                     setFstatus("idle");
+                    setStatus("idle");
                 });
             }
-
-            // const suggestions = await fetchSuggestions(context);
-
         },
-        750,
-        {
-            leading: false,
-        }
-    );
-
-    const getSuggestionsHandler = React.useCallback(
-        (editor: IEditor, transaction: Transaction) => {
-            if (transaction.selection.empty) {
-                setSuggestions([]);
-                setStatus("idle");
-                setContext(null);
-            } else if (
-                status === "idle" ||
-                (status === "done" && !transaction.getMeta("isSystemAction"))
-            ) {
-                debouncedGetSuggestions(editor, transaction);
-            }
-        },
-        [debouncedGetSuggestions, status]
+        [fstatus]
     );
 
     return {
         context,
         suggestions,
         status,
-        debouncedGetSuggestions: getSuggestionsHandler,
+        manualGetSuggestions,
         onBlur,
     };
 };
@@ -192,8 +189,30 @@ export const useCompletion = () => {
         "idle"
     );
 
-    const debouncedCompletion = useDebouncedCallback(
-        async (editor: IEditor, transaction: Transaction) => {
+    const removePreviewCompletion = React.useCallback((editor: IEditor) => {
+        editor.commands.revertCompletion();
+    }, []);
+
+    const onContentChange = React.useCallback(
+        (editor: IEditor, transaction: Transaction) => {
+            const isSystemAction = transaction.getMeta("isSystemAction");
+            if (!isSystemAction) {
+                editor.commands.revertCompletion();
+            }
+        },
+        []
+    );
+
+    return { onContentChange, removePreviewCompletion };
+};
+
+export const useSentenceGeneration = () => {
+    const [isGenerating, setIsGenerating] = React.useState(false);
+
+    const generateSentences = React.useCallback(
+        async (editor: IEditor, llm: string) => {
+            if (isGenerating) return;
+            
             const text = getTextForSlice(
                 editor.state.doc.cut(
                     Math.max(
@@ -204,44 +223,24 @@ export const useCompletion = () => {
                 )
             );
 
-            let completion = "";
-            if(fstatus === "idle") {
-                setFstatus("fetching");
-                fetchCompletion(text).then((result) => {
-                    completion = result;
-                    setFstatus("idle");
-                    editor.commands.previewCompletion(completion);
-                }).catch((error) => {
-                    console.error(error);
-                    setFstatus("idle");
-                });
+            if (text.length < MIN_DOC_LENGTH_FOR_COMPLETION) {
+                alert("Please write at least a few words before generating sentences.");
+                return;
             }
-            // const completion = await fetchCompletion(text);
-        },
-        500,
-        { leading: false }
-    );
 
-    const removePreviewCompletion = React.useCallback((editor: IEditor) => {
-        editor.commands.revertCompletion();
-    }, []);
-
-    const onContentChange = React.useCallback(
-        (editor: IEditor, transaction: Transaction) => {
-            const isSystemAction = transaction.getMeta("isSystemAction");
-            if (!isSystemAction) {
-                editor.commands.revertCompletion();
-                if (
-                    editor.state.selection.empty &&
-                    editor.state.doc.textContent.length >
-                        MIN_DOC_LENGTH_FOR_COMPLETION
-                ) {
-                    debouncedCompletion(editor, transaction);
-                }
+            setIsGenerating(true);
+            try {
+                const sentences = await fetchSentences(text, llm);
+                editor.commands.previewCompletion(sentences);
+            } catch (error) {
+                console.error(error);
+                alert("Failed to generate sentences. Please try again.");
+            } finally {
+                setIsGenerating(false);
             }
         },
-        [debouncedCompletion]
+        [isGenerating]
     );
 
-    return { onContentChange, removePreviewCompletion };
+    return { generateSentences, isGenerating };
 };

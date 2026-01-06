@@ -14,17 +14,17 @@ import { z } from "zod";
 // import { VertexAI } from "@langchain/google-vertexai";
 // import { GoogleVertexAIEmbeddings } from "@langchain/community/embeddings/googlevertexai";
 
-const bootstrap = async (name: string = "") => {
+const bootstrap = async (name: string = "", llmChoice?: string) => {
     // If the container is already registered, and no indexName set, just return it.
     // Prevents overwriting the container.
-    if (container.isRegistered("main-llm") && name ==="")
+    if (container.isRegistered("main-llm") && name ==="" && !llmChoice)
         return container;
     else
         container.clearInstances();
 
     const indexName: string = name || process.env.NEXT_PUBLIC_INDEX_NAME || "common";
 
-    let llm_choice: string = process.env.NEXT_PUBLIC_LLM || "ollama";
+    let llm_choice: string = llmChoice || process.env.NEXT_PUBLIC_LLM || "gemini";
     let main_llm: any = null;
 
     // try{

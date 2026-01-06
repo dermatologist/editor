@@ -17,8 +17,8 @@ export default function Home() {
                         <h1 className="text-2xl font-semibold">Magic Editor</h1>
                     </div>
                     <span className="text-sm text-gray-400 tracking-normal text-center px-8">
-                        Start typing to use autocompletion; select any text to
-                        trigger suggestions
+                        Select text and click &quot;Suggest Citations&quot; to get citation suggestions, 
+                        or click &quot;Next 3 Sentences&quot; to generate content
                     </span>
                 </div>
                 <Editor />
