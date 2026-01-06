@@ -144,12 +144,12 @@ const bootstrap = async (name: string = "", llmChoice?: string) => {
   // Define the tools the agent will have access to.
   let tools: any = [];
   try {
-    tools = [
-      new TavilySearch({
-        maxResults: 1,
-        tavilyApiKey: process.env.NEXT_PUBLIC_TAVILY_KEY || "nokey",
-      }),
-    ];
+    // tools = [
+    //   new TavilySearch({
+    //     maxResults: 1,
+    //     tavilyApiKey: process.env.NEXT_PUBLIC_TAVILY_KEY || "nokey",
+    //   }),
+    // ];
     // tools = [];
   } catch (error) {
     console.log("\nTavilySearch not available.");

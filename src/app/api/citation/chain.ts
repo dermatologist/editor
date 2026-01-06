@@ -28,12 +28,12 @@ export class CitationService extends BaseChain {
 
     const tools = this.resolve("tools", []);
 
-    const output = RunnableSequence.from([new RunnablePassthrough(), tools[0]]);
+    // const output = RunnableSequence.from([new RunnablePassthrough(), tools[0]]);
 
     const _chain = RunnableMap.from([
       {
         vectorstore: _context,
-        travility: output,
+        // travility: output,
       },
     ]);
     return _chain.invoke(input);

@@ -20,10 +20,11 @@ export const POST = withRateLimit(async (req) => {
     .split(",,");
   console.log("--VECTORSTORE_RESPONSE--");
   console.log(vectorstoreMatches);
-  const travility = _reply[0].travility;
+  // const travility = _reply[0].travility;
 
   // Parse the travility response
-  const outputText = JSON.parse(travility);
+  // const outputText = JSON.parse(travility);
+  const outputText: any[] = [];
 
   // for loop to iterate over the vectorstoreMatches
   // and append the matches to the outputText
