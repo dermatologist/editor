@@ -2,10 +2,10 @@ import { Editor as IEditor } from "@tiptap/core";
 import { Node } from "@tiptap/pm/model";
 import { Transaction } from "@tiptap/pm/state";
 import React from "react";
-import { useDebouncedCallback } from "use-debounce";
 
 import { SelectionContext } from "~/app/types";
 import { exponentialBackoff, fetchWithRetry } from "~/app/utils";
+
 
 
 export const fetchSuggestions = async (context: SelectionContext) => {
