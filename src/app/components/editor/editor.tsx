@@ -66,6 +66,7 @@ const EditorControls = () => {
                 suggestions={suggestions}
                 context={context}
                 status={status}
+                onClose={onBlur}
             />
         </>
     );

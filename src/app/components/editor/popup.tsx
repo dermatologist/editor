@@ -2,15 +2,17 @@
 
 import { autoUpdate, shift, useFloating } from "@floating-ui/react";
 import clsx from "clsx";
+import React from "react";
 import { useMedia } from "react-use";
 
 interface PopupProps {
     rect?: DOMRect | null;
     visible: boolean;
     children: React.ReactNode;
+    onClose?: () => void;
 }
 
-export const Popup = ({ rect, visible, children }: PopupProps) => {
+export const Popup = ({ rect, visible, children, onClose }: PopupProps) => {
     const isMobile = useMedia("(max-width: 640px)");
     const { refs, floatingStyles } = useFloating({
         whileElementsMounted: autoUpdate,
@@ -18,6 +20,35 @@ export const Popup = ({ rect, visible, children }: PopupProps) => {
         strategy: "fixed",
         middleware: [shift()],
     });
+
+    const overlayRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+        if (!visible || !onClose) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+
+        const handleClickOutside = (e: MouseEvent) => {
+            if (
+                overlayRef.current &&
+                !overlayRef.current.contains(e.target as Node)
+            ) {
+                onClose();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [visible, onClose]);
 
     if (!rect) {
         return null;
@@ -37,7 +68,10 @@ export const Popup = ({ rect, visible, children }: PopupProps) => {
         >
             {visible && (
                 <div
-                    ref={refs.setFloating}
+                    ref={(el) => {
+                        refs.setFloating(el);
+                        overlayRef.current = el;
+                    }}
                     style={floatingStyles}
                     className="flex-grow-0 flex-shrink"
                 >
