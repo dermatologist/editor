@@ -1,6 +1,6 @@
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import axios from "axios";
 import { convert } from "html-to-text";
-import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
