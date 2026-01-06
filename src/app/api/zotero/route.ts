@@ -75,7 +75,7 @@ export async function POST(req: Request) {
       console.log("Zotero Error" + e);
     }
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 256,
+      chunkSize: 512,
       chunkOverlap: 20,
     });
     for (const item of items) {
