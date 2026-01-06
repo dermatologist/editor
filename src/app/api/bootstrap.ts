@@ -1,16 +1,16 @@
 import "reflect-metadata";
 
-// The new version hits /api/embed as opposed to /api/embeddings in the deprecated version
-// Cannot upgrade now
-import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
-import {Ollama } from "@langchain/community/llms/ollama";
-import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { ChatPromptTemplate} from "@langchain/core/prompts";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { RedisVectorStore } from "@langchain/redis";
+// The new version hits /api/embed as opposed to /api/embeddings in the deprecated version
+// Cannot upgrade now
+// import { OllamaEmbeddings } from "@langchain/community/embeddings/ollama";
+// import {Ollama } from "@langchain/community/llms/ollama";
+import { TavilySearch } from "@langchain/tavily";
+import { BaseEmbedding,BaseLLM } from "medpromptjs";
 import { createClient } from "redis";
 import { container } from "tsyringe";
-import { z } from "zod";
 // import { VertexAI } from "@langchain/google-vertexai";
 // import { GoogleVertexAIEmbeddings } from "@langchain/community/embeddings/googlevertexai";
 
@@ -35,15 +35,21 @@ const bootstrap = async (name: string = "", llmChoice?: string) => {
     // })
     // main_llm = vertex;
     // } catch (error) {
-    const ollama = new Ollama({
+    // const ollama = new Ollama({
+    //     baseUrl: process.env.NEXT_PUBLIC_OLLAMA_URL || "http://localhost:11434",
+    //     model: process.env.NEXT_PUBLIC_OLLAMA_MODEL || "phi3:mini",
+    //     numPredict: 128,
+    //     temperature: 0.6,
+    // });
+
+    const ollama = new BaseLLM({
         baseUrl: process.env.NEXT_PUBLIC_OLLAMA_URL || "http://localhost:11434",
+        apiKey: process.env.NEXT_PUBLIC_OLLAMA_API_KEY || "",
         model: process.env.NEXT_PUBLIC_OLLAMA_MODEL || "phi3:mini",
-        numPredict: 128,
-        temperature: 0.6,
     });
 
     const gemini = new ChatGoogleGenerativeAI({
-        model: process.env.NEXT_PUBLIC_GEMINI_MODEL || "gemini-1.5-flash",
+        model: process.env.NEXT_PUBLIC_GEMINI_MODEL || "gemini-2.5-pro",
         temperature: 0.6,
         maxRetries: 1,
         apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
@@ -76,9 +82,10 @@ const bootstrap = async (name: string = "", llmChoice?: string) => {
     //     embedding = new GoogleVertexAIEmbeddings();
     // } catch (error) {
 
-        embedding =  new OllamaEmbeddings({
-        model: process.env.NEXT_PUBLIC_EMBEDDING_MODEL || "all-minilm",
-        baseUrl: process.env.NEXT_PUBLIC_OLLAMA_URL || "http://localhost:11434",
+        embedding =  new BaseEmbedding({
+        baseUrl: process.env.NEXT_PUBLIC_OLLAMA_EMBEDDING_URL || "http://localhost:11434",
+        apiKey: process.env.NEXT_PUBLIC_OLLAMA_API_KEY || "",
+        model: process.env.NEXT_PUBLIC_OLLAMA_EMBEDDING_MODEL || "embeddings-phi3",
         });
     // }
     const vectorstore = await new RedisVectorStore(embedding, {
@@ -122,7 +129,8 @@ const bootstrap = async (name: string = "", llmChoice?: string) => {
     // Define the tools the agent will have access to.
     let tools: any = []
     try{
-        tools = [new TavilySearchResults({ maxResults: 1, apiKey: process.env.NEXT_PUBLIC_TAVILY_KEY })];
+        tools = [new TavilySearch({ maxResults: 1, tavilyApiKey: process.env.NEXT_PUBLIC_TAVILY_KEY || "nokey" })];
+        // tools = [];
     } catch (error) {
         console.log("\nTavilySearch not available.")
     }
@@ -135,6 +143,9 @@ const bootstrap = async (name: string = "", llmChoice?: string) => {
         useValue: main_llm,
     });
 
+    container.register("llm", {
+        useValue: ollama,
+    });
 
     container.register("prompt", {
         useValue: prompt,

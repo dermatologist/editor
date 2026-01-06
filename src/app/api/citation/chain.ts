@@ -9,8 +9,8 @@ export class CitationService extends BaseChain {
     chainService: ChainService;
 
     constructor(container: any, name: string, description: string, template: string="") {
-        super(container, name, description, template);
-        this.chainService = new ChainService(container, "", "", "");
+        super(container);
+        this.chainService = new ChainService(container);
     }
 
     async Chain(input: any) {
@@ -23,15 +23,17 @@ export class CitationService extends BaseChain {
 
         const _context = _input.pipe(this.chainService.newRetreiver).pipe(this.chainService.formatDocs);
 
-        const output = RunnableSequence.from([
-        new RunnablePassthrough(),
-        this.tools[0],
-        ]);
+        // const tools = this.resolve("tools", [])
+
+        // const output = RunnableSequence.from([
+        // new RunnablePassthrough(),
+        // tools[0],
+        // ]);
 
         const _chain = RunnableMap.from([
         {
             vectorstore: _context,
-            travility: output,
+            // travility: output,
         },
         ]);
         return  _chain.invoke(input);
