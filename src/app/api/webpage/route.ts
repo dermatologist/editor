@@ -1,6 +1,6 @@
 import axios from "axios";
 import { convert } from "html-to-text";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const container = await bootstrap();
     const indexName = formData.get("index") as string || "";
-    const redisRetriever = new RedisRetreiver(container, "", "");
+    const redisRetriever = new RedisRetreiver(container);
     let webPage = formData.get("webpage") as string;
     let items: { title: string; content: any; }[] = [];
     try{

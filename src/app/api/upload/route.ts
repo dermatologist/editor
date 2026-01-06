@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 
 import AdmZip  from 'adm-zip';
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import {pdfToText} from 'pdf-ts';
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const container = await bootstrap();
     const indexName = formData.get("index") as string || "";
-    const redisRetriever = new RedisRetreiver(container, "", "");
+    const redisRetriever = new RedisRetreiver(container);
     const file = formData.get("file") as File;
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);

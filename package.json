@@ -17,6 +17,7 @@
         "@langchain/ollama": "^0.1.6",
         "@langchain/redis": "^0.1.4",
         "@langchain/tavily": "^0.1.5",
+        "@langchain/textsplitters": "^0.1.0",
         "@tiptap/extension-bubble-menu": "^2.1.11",
         "@tiptap/extension-hard-break": "^2.1.11",
         "@tiptap/extension-heading": "^2.1.11",

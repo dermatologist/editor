@@ -7,7 +7,7 @@ import { SentenceChainService } from "./chain";
 
 const getSentences = async (text: string, llm?: string) => {
     const container = await bootstrap("", llm);
-    const chain = new SentenceChainService(container, "", "", "");
+    const chain = new SentenceChainService(container);
     return chain.sentenceChain({'question': text});
 }
 
