@@ -11,9 +11,10 @@ interface MenuProps {
     suggestions: string[];
     context: SelectionContext | null;
     status: "idle" | "fetching" | "done";
+    onClose?: () => void;
 }
 
-export const Menu = ({ suggestions, context, status }: MenuProps) => {
+export const Menu = ({ suggestions, context, status, onClose }: MenuProps) => {
     const { editor } = useCurrentEditor();
 
     const lastRect = React.useRef<DOMRect | null>(null);
@@ -49,7 +50,7 @@ export const Menu = ({ suggestions, context, status }: MenuProps) => {
     }
 
     return (
-        <Popup rect={rect} visible={status !== "idle"}>
+        <Popup rect={rect} visible={status !== "idle"} onClose={onClose}>
             <div className="flex flex-col gap-2">
                 <div className="flex flex-row items-center gap-1">
                     <span className="text-sm font-semibold">Suggestions</span>

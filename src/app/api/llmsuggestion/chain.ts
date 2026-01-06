@@ -4,31 +4,31 @@ import { RunnableLambda,RunnableMap, RunnablePassthrough, RunnableSequence } fro
 import { BaseChain } from "medpromptjs";
 
 export class ChainService extends BaseChain {
+  tools = this.resolve("tools", []);
 
+  async Chain(input: any) {
+    const search = RunnableSequence.from([
+      {
+        input: new RunnablePassthrough().pick("selection"),
+      },
+      this.tools[0],
+    ]);
 
+    const vars = RunnableMap.from({
+      search: search,
+      before: new RunnablePassthrough().pick("before"),
+      after: new RunnablePassthrough().pick("after"),
+      selection: new RunnablePassthrough().pick("selection"),
+    });
 
-
-    async Chain(input: any) {
-        const search = RunnableSequence.from([{
-            input: new RunnablePassthrough().pick("selection"),
-        }, this.tools[0]]);
-
-        const vars = RunnableMap.from({
-            search: search,
-            before: new RunnablePassthrough().pick("before"),
-            after: new RunnablePassthrough().pick("after"),
-            selection: new RunnablePassthrough().pick("selection"),
-        });
-
-        const output = RunnableSequence.from([
-        vars,
-        this.resolve("suggestion-prompt"),
-        this.llm,
-        new StringOutputParser(),
-        ]);
-        return  output.invoke(input);
-    }
-
+    const output = RunnableSequence.from([
+      vars,
+      this.resolve("suggestion-prompt"),
+      this.llm,
+      new StringOutputParser(),
+    ]);
+    return output.invoke(input);
+  }
 }
 
 

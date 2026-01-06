@@ -1,9 +1,9 @@
 "use client";
 
 import Placeholder from "@tiptap/extension-placeholder";
-import { EditorProvider } from "@tiptap/react";
+import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import ReactDOM from "react-dom";
 
 import {
@@ -13,12 +13,66 @@ import {
     TextReplacementExtension,
 } from "./extensions";
 import { Menu } from "./menu";
-import { useCompletion, useSuggestions } from "./utils";
+import { useCompletion, useSentenceGeneration, useSuggestions } from "./utils";
+
+const EditorControls = () => {
+    const { editor } = useCurrentEditor();
+    const { manualGetSuggestions, suggestions, status, context, onBlur } = useSuggestions();
+    const { generateSentences, isGenerating } = useSentenceGeneration();
+    const [selectedLLM, setSelectedLLM] = useState<string>("gemini");
+
+    const handleSuggestCitations = () => {
+        if (editor) {
+            manualGetSuggestions(editor);
+        }
+    };
+
+    const handleGenerateSentences = () => {
+        if (editor) {
+            generateSentences(editor, selectedLLM);
+        }
+    };
+
+    return (
+        <>
+            <div className="flex gap-2 mb-4 items-center flex-wrap">
+                <label className="flex items-center gap-2">
+                    <span className="text-sm font-medium">LLM:</span>
+                    <select
+                        value={selectedLLM}
+                        onChange={(e) => setSelectedLLM(e.target.value)}
+                        className="px-3 py-2 border rounded-md bg-white text-sm"
+                    >
+                        <option value="gemini">Gemini</option>
+                        <option value="ollama">Ollama</option>
+                    </select>
+                </label>
+                <button
+                    onClick={handleGenerateSentences}
+                    disabled={isGenerating}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-400 text-sm font-medium"
+                >
+                    {isGenerating ? "Generating..." : "Next 3 Sentences"}
+                </button>
+                <button
+                    onClick={handleSuggestCitations}
+                    disabled={status === "fetching"}
+                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:bg-gray-400 text-sm font-medium"
+                >
+                    {status === "fetching" ? "Loading..." : "Suggest Citations"}
+                </button>
+            </div>
+            <Menu
+                suggestions={suggestions}
+                context={context}
+                status={status}
+                onClose={onBlur}
+            />
+        </>
+    );
+};
 
 export const Editor = () => {
-    const { suggestions, status, debouncedGetSuggestions, context, onBlur } =
-        useSuggestions();
-
     const { onContentChange, removePreviewCompletion } = useCompletion();
 
     const fileInput = useRef<HTMLInputElement>(null);
@@ -128,25 +182,11 @@ export const Editor = () => {
                         class: "prose !outline-none p-4 min-h-[50vh]",
                     },
                 }}
-                onBlur={onBlur}
-                onSelectionUpdate={({ editor, transaction }) => {
-                    const isSystemAction =
-                        transaction.getMeta("isSystemAction");
-
-                    if (!isSystemAction) {
-                        removePreviewCompletion(editor);
-                        debouncedGetSuggestions(editor, transaction);
-                    }
-                }}
                 onUpdate={({ editor, transaction }) => {
                     onContentChange(editor, transaction);
                 }}
             >
-                <Menu
-                    suggestions={suggestions}
-                    context={context}
-                    status={status}
-                />
+                <EditorControls />
             </EditorProvider>
         </div>
     );
