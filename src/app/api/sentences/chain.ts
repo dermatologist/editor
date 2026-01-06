@@ -57,7 +57,7 @@ export class SentenceChainService extends BaseChain {
         const sentencePrompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
-                "You are a helpful writing assistant. Based on the context provided and any additional research material, generate exactly 3 sentences that naturally continue the text. Make the sentences coherent, relevant, and well-written. Additional context: {context}",
+                "You are a helpful writing assistant. Based on the context provided and any additional research material, generate exactly 3 sentences that naturally continue the text. Do not repeat \"these are the three sentences\". Make the sentences coherent, relevant, and well-written. Additional context: {context}",
             ],
             ["human", "Continue this text with 3 sentences: {question}"],
         ]);
